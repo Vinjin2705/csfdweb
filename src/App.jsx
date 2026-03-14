@@ -34,6 +34,14 @@ import OrganizationShirtRequestPage from './pages/OrganizationShirtRequestPage'
 import OrganizationShirtSummaryPage from './pages/OrganizationShirtSummaryPage'
 import OtherExemptionFormPage from './pages/OtherExemptionFormPage'
 import OtherExemptionSummaryPage from './pages/OtherExemptionSummaryPage'
+import CrossDressingInfoPage from './pages/CrossDressingInfoPage'
+import CrossDressingFormPage from './pages/CrossDressingFormPage'
+import CrossDressingSummaryPage from './pages/CrossDressingSummaryPage'
+import ComplaintInfoPage from './pages/ComplaintInfoPage'
+import ComplainantFormPage from './pages/ComplainantFormPage'
+import RespondentFormPage from './pages/RespondentFormPage'
+import ComplaintDetailsFormPage from './pages/ComplaintDetailsFormPage'
+import ComplaintSummaryPage from './pages/ComplaintSummaryPage'
 
 function App() {
   return (
@@ -73,6 +81,14 @@ function App() {
         <Route path="/organization-shirt-summary" element={<OrganizationShirtSummaryPage />} />
         <Route path="/other-exemption-form" element={<OtherExemptionFormPage />} />
         <Route path="/other-exemption-summary" element={<OtherExemptionSummaryPage />} />
+        <Route path="/cross-dressing-info" element={<CrossDressingInfoPage />} />
+        <Route path="/cross-dressing-form" element={<CrossDressingFormPage />} />
+        <Route path="/cross-dressing-summary" element={<CrossDressingSummaryPage />} />
+        <Route path="/complaint-info" element={<ComplaintInfoPage />} />
+        <Route path="/complaint-form" element={<ComplainantFormPage />} />
+        <Route path="/respondent-form" element={<RespondentFormPage />} />
+        <Route path="/complaint-details" element={<ComplaintDetailsFormPage />} />
+        <Route path="/complaint-summary" element={<ComplaintSummaryPage />} />
       </Routes>
     </Router>
   )

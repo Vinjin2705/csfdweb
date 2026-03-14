@@ -92,7 +92,11 @@ function ServicesPage() {
                 <img src={crossDressingLogo} alt="Cross-Dressing Permit" className="w-20 h-20 object-contain" />
               </div>
               <h3 className="text-sm font-bold mb-4 flex-grow" style={{color: '#111c4e'}}>Cross-Dressing Permit</h3>
-              <button className="w-full text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm mt-auto flex-shrink-0" style={{backgroundColor: '#2563eb'}}>
+              <button 
+                className="w-full text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm mt-auto flex-shrink-0" 
+                style={{backgroundColor: '#2563eb'}}
+                onClick={() => navigate('/cross-dressing-info')}
+              >
                 Apply
               </button>
             </div>
@@ -103,7 +107,11 @@ function ServicesPage() {
                 <img src={complaintLogo} alt="Complaint Desk" className="w-20 h-20 object-contain" />
               </div>
               <h3 className="text-sm font-bold mb-4 flex-grow" style={{color: '#111c4e'}}>Complaint Desk</h3>
-              <button className="w-full text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm mt-auto flex-shrink-0" style={{backgroundColor: '#2563eb'}}>
+              <button 
+                className="w-full text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm mt-auto flex-shrink-0" 
+                style={{backgroundColor: '#2563eb'}}
+                onClick={() => navigate('/complaint-info')}
+              >
                 Submit
               </button>
             </div>
