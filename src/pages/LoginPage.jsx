@@ -53,11 +53,11 @@ function LoginPage() {
             <div className="space-y-3">
               <a href="#home" className="block text-gray-800 hover:text-blue-600 transition-colors py-2 text-lg font-medium" onClick={(e) => { e.preventDefault(); navigate('/'); setShowMenu(false); }}>HOME</a>
               <div className="border-b border-gray-300"></div>
-              <a href="#services" className="block text-gray-800 hover:text-blue-600 transition-colors py-2 text-lg font-medium">SERVICES</a>
+              <a href="#services" className="block text-gray-800 hover:text-blue-600 transition-colors py-2 text-lg font-medium" onClick={(e) => { e.preventDefault(); navigate('/services'); setShowMenu(false); }}>SERVICES</a>
               <div className="border-b border-gray-300"></div>
-              <a href="#about" className="block text-gray-800 hover:text-blue-600 transition-colors py-2 text-lg font-medium">ABOUT</a>
+              <a href="#about" className="block text-gray-800 hover:text-blue-600 transition-colors py-2 text-lg font-medium" onClick={(e) => { e.preventDefault(); navigate('/about'); setShowMenu(false); }}>ABOUT</a>
               <div className="border-b border-gray-300"></div>
-              <a href="#faqs" className="block text-gray-800 hover:text-blue-600 transition-colors py-2 text-lg font-medium">FAQs</a>
+              <a href="#faqs" className="block text-gray-800 hover:text-blue-600 transition-colors py-2 text-lg font-medium" onClick={(e) => { e.preventDefault(); navigate('/faqs'); setShowMenu(false); }}>FAQs</a>
             </div>
           </div>
         )}

@@ -23,7 +23,7 @@ function LandingPage() {
           <span className="text-lg font-marcellus font-regular text-white">Center for Student Formation and Discipline</span>
         </div>
         <nav className="flex gap-8">
-          <a href="#services" className="text-white font-medium hover:opacity-80 transition-opacity">Services</a>
+          <a href="#services" className="text-white font-medium hover:opacity-80 transition-opacity" onClick={(e) => { e.preventDefault(); navigate('/services'); }}>Services</a>
           <a href="#about" className="text-white font-medium hover:opacity-80 transition-opacity">About</a>
           <a href="#login" className="text-white font-medium hover:opacity-80 transition-opacity" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>Log In</a>
         </nav>
