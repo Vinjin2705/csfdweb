@@ -1,12 +1,12 @@
-import umakLogo from '../assets/UMAK LOGO.png'
-import csfdLogo from '../assets/CSFD LOGO.png'
-import landingPageBg from '../assets/landingpagebg.png'
-import bg1 from '../assets/BG-1.png'
-import fillerImage from '../assets/FILLER IMAGE 1.png'
+import umakLogo from '../assets/logos/UMAK LOGO.png'
+import csfdLogo from '../assets/logos/CSFD LOGO.png'
+import landingPageBg from '../assets/images/landingpagebg.png'
+import bg1 from '../assets/images/BG-1.png'
+import fillerImage from '../assets/images/FILLER IMAGE 1.png'
 
 // Footer logos
-import footerUmakLogo from '../assets/UMAK LOGO.png'
-import footerCsfdLogo from '../assets/CSFD LOGO.png'
+import footerUmakLogo from '../assets/logos/UMAK LOGO.png'
+import footerCsfdLogo from '../assets/logos/CSFD LOGO.png'
 import { useNavigate } from 'react-router-dom'
 
 function LandingPage() {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import elementFull from '../assets/elementfull.png'
+import elementFull from '../assets/images/elementfull.png'
 
 function LoginPage() {
   const [showMenu, setShowMenu] = useState(false)
