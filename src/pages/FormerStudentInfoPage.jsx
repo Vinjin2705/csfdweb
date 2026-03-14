@@ -9,14 +9,15 @@ function FormerStudentInfoPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const requesterData = location.state?.requesterData || {}
+  const savedFormData = location.state?.formData || {}
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [showPurposeDropdown, setShowPurposeDropdown] = useState(false)
   const [errors, setErrors] = useState({})
   const [formData, setFormData] = useState({
-    lastLevelYear: '',
-    email: '',
-    purpose: '',
-    otherPurpose: ''
+    lastLevelYear: savedFormData.lastLevelYear || '',
+    email: savedFormData.email || '',
+    purpose: savedFormData.purpose || '',
+    otherPurpose: savedFormData.otherPurpose || ''
   })
 
   const purposeOptions = [

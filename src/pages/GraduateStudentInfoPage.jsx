@@ -9,14 +9,15 @@ function GraduateStudentInfoPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const requesterData = location.state?.requesterData || {}
+  const savedFormData = location.state?.formData || {}
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [showPurposeDropdown, setShowPurposeDropdown] = useState(false)
   const [errors, setErrors] = useState({})
   const [formData, setFormData] = useState({
-    yearGraduated: '',
-    email: '',
-    degreeName: '',
-    purpose: ''
+    yearGraduated: savedFormData.yearGraduated || '',
+    email: savedFormData.email || '',
+    degreeName: savedFormData.degreeName || '',
+    purpose: savedFormData.purpose || ''
   })
 
   const purposeOptions = [

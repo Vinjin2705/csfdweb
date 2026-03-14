@@ -1,133 +1,129 @@
-import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Navbar7 from '../components/navbars/Navbar7'
 import footerUmakLogo from '../assets/logos/UMAK LOGO.png'
 import footerCsfdLogo from '../assets/logos/CSFD LOGO.png'
 import cancelIcon from '../assets/icons/line-md_file-cancel-filled.png'
+import thankYouIcon from '../assets/icons/thankyoucheck.png'
+import { useState } from 'react'
 
-function CitationSlipPage() {
+function OJTSummaryPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const savedData = location.state?.formData || {}
   const [showCancelModal, setShowCancelModal] = useState(false)
-  const [iAgree, setIAgree] = useState(false)
-  const [error, setError] = useState('')
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  
+  const formData = location.state?.formData || {}
+
+  const getFullName = () => {
+    const parts = []
+    if (formData.givenName) parts.push(formData.givenName)
+    if (formData.middleName) parts.push(formData.middleName)
+    if (formData.surname) parts.push(formData.surname)
+    if (formData.extensionName) parts.push(formData.extensionName)
+    return parts.join(' ') || 'Not provided'
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar7 Header */}
       <Navbar7 />
 
-      {/* Citation Slip Process Section */}
-      <section className="px-12 py-16">
+      {/* Information Summary Section */}
+      <section className="px-12 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Title */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-black mb-2" style={{color: '#3d3d3d', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>CITATION SLIP</h1>
-            <h2 className="text-3xl font-black" style={{color: '#ffc400', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>PROCESS</h2>
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-black" style={{color: '#3d3d3d', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>INFORMATION</h1>
+            <h2 className="text-2xl font-black" style={{color: '#ffc400', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>SUMMARY</h2>
           </div>
 
-          {/* Steps */}
-          <div className="relative">
-            {/* Vertical Line - Centered with check icons */}
-            <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-green-600"></div>
+          {/* Student Information Summary Box */}
+          <div className="border-4 rounded-2xl p-6 mb-8" style={{borderColor: '#111c4e', backgroundColor: '#f9f9f9'}}>
+            <h3 className="text-xl font-bold text-center mb-4" style={{color: '#3d3d3d'}}>
+              STUDENT INFORMATION <span style={{color: '#ffc400'}}>SUMMARY</span>
+            </h3>
+            
+            <div className="space-y-3">
+              {/* NAME and SEX */}
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="font-bold" style={{color: '#111c4e'}}>NAME: </span>
+                  <span style={{color: '#111c4e'}}>{getFullName()}</span>
+                </div>
+                <div>
+                  <span className="font-bold" style={{color: '#111c4e'}}>SEX: </span>
+                  <span style={{color: '#111c4e'}}>{formData.sex || 'Not provided'}</span>
+                </div>
+              </div>
 
-            {/* Step 1 */}
-            <div className="flex gap-6 mb-8 relative items-center">
-              <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
+              {/* UMAK STUDENT NUMBER */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>UMAK STUDENT NUMBER: </span>
+                <span style={{color: '#111c4e'}}>{formData.studentNumber || 'Not provided'}</span>
               </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
-                <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>Step 1</h3>
-                <p className="text-gray-700">Prepare an apology letter using the provided format.</p>
-              </div>
-            </div>
 
-            {/* Step 2 */}
-            <div className="flex gap-6 mb-8 relative items-center">
-              <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
+              {/* COLLEGE/INSTITUTE */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>COLLEGE/INSTITUTE: </span>
+                <span style={{color: '#111c4e'}}>{formData.college || 'Not provided'}</span>
               </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
-                <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>Step 2</h3>
-                <p className="text-gray-700">Wait for the validation of your request. Once validated, an email will be sent through your email for certification.</p>
-              </div>
-            </div>
 
-            {/* Step 3 */}
-            <div className="flex gap-6 mb-8 relative items-center">
-              <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
+              {/* YEAR/GRADE LEVEL */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>YEAR/GRADE LEVEL: </span>
+                <span style={{color: '#111c4e'}}>{formData.yearLevel || 'Not provided'}</span>
               </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
-                <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>Step 3</h3>
-                <p className="text-gray-700">Print the emailed certificate.</p>
-              </div>
-            </div>
 
-            {/* Step 4 */}
-            <div className="flex gap-6 relative items-center">
-              <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
+              {/* EMAIL ADDRESS */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>EMAIL ADDRESS: </span>
+                <span style={{color: '#111c4e'}}>{formData.email || 'Not provided'}</span>
               </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
-                <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>Step 4</h3>
-                <p className="text-gray-700">Proceed to the Center for Student Formation and Discipline (CSFD) to have your Citation Slip request certified with the official University seal.</p>
+
+              {/* COMPANY */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>COMPANY: </span>
+                <span style={{color: '#111c4e'}}>{formData.company || 'Not provided'}</span>
+              </div>
+
+              {/* REQUIREMENTS */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>REQUIREMENT/S: </span>
+                <div className="ml-4 mt-1 space-y-1">
+                  <p style={{color: '#111c4e'}}>{formData.corFile ? `✓ ${formData.corFile.name}` : '<<requirements>>'}</p>
+                  <p style={{color: '#111c4e'}}>{formData.schoolIdFile ? `✓ ${formData.schoolIdFile.name}` : '<<requirements>>'}</p>
+                  <p style={{color: '#111c4e'}}>{formData.moaFile ? `✓ ${formData.moaFile.name}` : '<<requirements>>'}</p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* I Agree Checkbox */}
-          <div className="flex justify-center mt-8 mb-6">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <div 
-                className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${iAgree ? 'bg-green-600 border-green-600' : 'border-gray-400'}`}
-                onClick={() => {
-                  setIAgree(!iAgree)
-                  setError('')
-                }}
-              >
-                {iAgree && (
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </div>
-              <span className="font-bold text-lg" style={{color: '#111c4e'}}>I Agree</span>
-            </label>
+          {/* Certify Button */}
+          <div className="flex justify-center mb-6">
+            <button
+              className="px-12 py-4 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity w-full max-w-md"
+              style={{backgroundColor: '#1F9E55', color: 'white'}}
+              onClick={() => setShowSuccessModal(true)}
+            >
+              I HEREBY CERTIFY THE INFORMATION
+            </button>
           </div>
-          {error && (
-            <p className="text-center text-sm mb-4" style={{color: '#dc2626'}}>{error}</p>
-          )}
 
           {/* Action Buttons */}
-          <div className="flex justify-center gap-6">
+          <div className="flex justify-center gap-4">
+            <button
+              className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
+              style={{backgroundColor: '#2563eb', color: 'white'}}
+              onClick={() => navigate('/ojt-form', { state: { formData } })}
+            >
+              BACK
+            </button>
             <button
               className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
               style={{backgroundColor: '#dc2626', color: 'white'}}
               onClick={() => setShowCancelModal(true)}
             >
               CANCEL
-            </button>
-            <button
-              className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
-              style={{backgroundColor: '#1F9E55', color: 'white'}}
-              onClick={() => {
-                if (!iAgree) {
-                  setError('Please agree to the terms to proceed')
-                  return
-                }
-                navigate('/citation-slip-form', { state: { formData: savedData } })
-              }}
-            >
-              PROCEED
             </button>
           </div>
         </div>
@@ -204,6 +200,7 @@ function CitationSlipPage() {
           </div>
         </div>
       </footer>
+
       {/* Cancel Modal */}
       {showCancelModal && (
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
@@ -250,8 +247,43 @@ function CitationSlipPage() {
           </div>
         </div>
       )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+          <div className="rounded-xl shadow-2xl p-8 max-w-md w-full mx-4 text-center" style={{backgroundColor: '#000B3C'}}>
+            {/* Success Icon */}
+            <div className="flex justify-center mb-6">
+              <img src={thankYouIcon} alt="Thank You" className="w-20 h-20 object-contain" />
+            </div>
+
+            {/* Modal Title */}
+            <div className="text-center mb-4">
+              <h3 className="text-3xl font-black text-white" style={{fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>
+                Thank you for requesting!
+              </h3>
+            </div>
+
+            {/* Modal Subtitle */}
+            <div className="text-center mb-8">
+              <p className="text-white text-lg opacity-80">
+                Please wait for 3 working days.
+              </p>
+            </div>
+
+            {/* Back to Home Button */}
+            <button
+              className="w-full px-8 py-3 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity"
+              style={{backgroundColor: '#1F9E55', color: 'white'}}
+              onClick={() => navigate('/')}
+            >
+              back to home
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
-export default CitationSlipPage
+export default OJTSummaryPage

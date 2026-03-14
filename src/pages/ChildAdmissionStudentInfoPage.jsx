@@ -5,14 +5,15 @@ import footerUmakLogo from '../assets/logos/UMAK LOGO.png'
 import footerCsfdLogo from '../assets/logos/CSFD LOGO.png'
 import cancelIcon from '../assets/icons/line-md_file-cancel-filled.png'
 
-function RequesterInfoPage() {
+function ChildAdmissionStudentInfoPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const savedData = location.state?.requesterData || {}
+  const savedData = location.state?.studentData || {}
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [showSexDropdown, setShowSexDropdown] = useState(false)
   const [showCollegeDropdown, setShowCollegeDropdown] = useState(false)
-  const [showClassificationDropdown, setShowClassificationDropdown] = useState(false)
+  const [showYearDropdown, setShowYearDropdown] = useState(false)
+  const [errors, setErrors] = useState({})
   const [formData, setFormData] = useState({
     givenName: savedData.givenName || '',
     surname: savedData.surname || '',
@@ -21,10 +22,12 @@ function RequesterInfoPage() {
     sex: savedData.sex || '',
     studentNumber: savedData.studentNumber || '',
     college: savedData.college || '',
-    classification: savedData.classification || ''
+    email: savedData.email || '',
+    yearLevel: savedData.yearLevel || ''
   })
 
   const sexOptions = ['Male', 'Female', 'Other']
+  
   const collegeOptions = [
     'College of Business and Financial Management',
     'College of Continuing Advanced and Professional Studies',
@@ -47,13 +50,23 @@ function RequesterInfoPage() {
     'School of Law',
     'Other'
   ]
-  const classificationOptions = [
-    'Currently enrolled at UMAK (Undergraduate)',
-    'Graduate at UMAK (HSU/College/Graduate Studies Program)',
-    'Former/Previous student at UMAK (HSU/College)'
+
+  const yearOptions = [
+    'Grade 11',
+    'Grade 12',
+    'First Year level',
+    'Second Year level',
+    'Third Year level',
+    'Fourth Year level',
+    'Fifth Year level'
   ]
 
-  const [errors, setErrors] = useState({})
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }))
+    }
+  }
 
   const validateForm = () => {
     const newErrors = {}
@@ -62,18 +75,10 @@ function RequesterInfoPage() {
     if (!formData.sex) newErrors.sex = 'Sex is required'
     if (!formData.studentNumber.trim()) newErrors.studentNumber = 'Student number is required'
     if (!formData.college) newErrors.college = 'College/Institute is required'
-    if (!formData.classification) newErrors.classification = 'Classification is required'
-    
+    if (!formData.email.trim()) newErrors.email = 'Email address is required'
+    if (!formData.yearLevel) newErrors.yearLevel = 'Year/Grade level is required'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
-  }
-
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-    // Clear error when user types
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }))
-    }
   }
 
   return (
@@ -81,21 +86,21 @@ function RequesterInfoPage() {
       {/* Navbar7 Header */}
       <Navbar7 />
 
-      {/* Requester Information Section */}
+      {/* Student Information Section */}
       <section className="px-12 py-12">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           {/* Title */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-black mb-2" style={{color: '#3d3d3d', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>REQUESTER</h1>
+            <h1 className="text-4xl font-black mb-2" style={{color: '#3d3d3d', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>STUDENT</h1>
             <h2 className="text-3xl font-black" style={{color: '#ffc400', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>INFORMATION</h2>
           </div>
 
           {/* Form */}
           <div className="space-y-6">
-            {/* Row 1 - Given Name, Surname, Middle Name */}
-            <div className="grid grid-cols-3 gap-6">
+            {/* Row 1: Given Name, Surname, Middle Name */}
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
                   GIVEN NAME<span className="text-red-500">*</span>
                 </label>
                 <input
@@ -106,10 +111,10 @@ function RequesterInfoPage() {
                   value={formData.givenName}
                   onChange={(e) => handleInputChange('givenName', e.target.value)}
                 />
-                {errors.givenName && <p className="text-red-500 text-sm mt-1">{errors.givenName}</p>}
+                {errors.givenName && <p className="text-red-500 text-xs mt-1">{errors.givenName}</p>}
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
                   SURNAME<span className="text-red-500">*</span>
                 </label>
                 <input
@@ -120,10 +125,10 @@ function RequesterInfoPage() {
                   value={formData.surname}
                   onChange={(e) => handleInputChange('surname', e.target.value)}
                 />
-                {errors.surname && <p className="text-red-500 text-sm mt-1">{errors.surname}</p>}
+                {errors.surname && <p className="text-red-500 text-xs mt-1">{errors.surname}</p>}
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
                   MIDDLE NAME
                 </label>
                 <input
@@ -137,10 +142,10 @@ function RequesterInfoPage() {
               </div>
             </div>
 
-            {/* Row 2 - Extension Name, Sex, Student Number */}
-            <div className="grid grid-cols-3 gap-6">
+            {/* Row 2: Extension Name, Sex, Student Number */}
+            <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
                   EXTENSION NAME
                 </label>
                 <input
@@ -153,7 +158,7 @@ function RequesterInfoPage() {
                 />
               </div>
               <div className="relative">
-                <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
                   SEX<span className="text-red-500">*</span>
                 </label>
                 <button
@@ -168,7 +173,7 @@ function RequesterInfoPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                {errors.sex && <p className="text-red-500 text-sm mt-1">{errors.sex}</p>}
+                {errors.sex && <p className="text-red-500 text-xs mt-1">{errors.sex}</p>}
                 {showSexDropdown && (
                   <div className="absolute z-10 w-full mt-1 bg-white border-2 rounded-lg shadow-lg" style={{borderColor: '#111c4e'}}>
                     {sexOptions.map((option) => (
@@ -187,7 +192,7 @@ function RequesterInfoPage() {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
                   UMAK STUDENT NUMBER<span className="text-red-500">*</span>
                 </label>
                 <input
@@ -198,13 +203,13 @@ function RequesterInfoPage() {
                   value={formData.studentNumber}
                   onChange={(e) => handleInputChange('studentNumber', e.target.value)}
                 />
-                {errors.studentNumber && <p className="text-red-500 text-sm mt-1">{errors.studentNumber}</p>}
+                {errors.studentNumber && <p className="text-red-500 text-xs mt-1">{errors.studentNumber}</p>}
               </div>
             </div>
 
-            {/* Row 3 - College/Institute */}
+            {/* Row 3: College/Institute */}
             <div className="relative">
-              <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
+              <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
                 COLLEGE/INSTITUTE<span className="text-red-500">*</span>
               </label>
               <button
@@ -219,7 +224,7 @@ function RequesterInfoPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {errors.college && <p className="text-red-500 text-sm mt-1">{errors.college}</p>}
+              {errors.college && <p className="text-red-500 text-xs mt-1">{errors.college}</p>}
               {showCollegeDropdown && (
                 <div className="absolute z-10 w-full mt-1 bg-white border-2 rounded-lg shadow-lg max-h-60 overflow-y-auto" style={{borderColor: '#111c4e'}}>
                   {collegeOptions.map((option) => (
@@ -237,82 +242,104 @@ function RequesterInfoPage() {
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Info Cards */}
-          <div className="grid grid-cols-4 gap-4 mt-8">
-            {/* Reminder Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-2xl font-bold">!</span>
+            {/* Row 4: Email Address */}
+            <div>
+              <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                EMAIL ADDRESS<span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ${errors.email ? 'border-red-500' : ''}`}
+                style={{borderColor: errors.email ? '#dc2626' : '#111c4e'}}
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+              />
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+            </div>
+
+            {/* Row 5: Year/Grade Level */}
+            <div className="relative">
+              <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                YEAR/GRADE LEVEL<span className="text-red-500">*</span>
+              </label>
+              <button
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none text-left bg-white flex justify-between items-center ${errors.yearLevel ? 'border-red-500' : ''}`}
+                style={{borderColor: errors.yearLevel ? '#dc2626' : '#111c4e'}}
+                onClick={() => setShowYearDropdown(!showYearDropdown)}
+              >
+                <span className={formData.yearLevel ? 'text-black' : 'text-gray-400'}>
+                  {formData.yearLevel || 'Select your year/grade level'}
+                </span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {errors.yearLevel && <p className="text-red-500 text-xs mt-1">{errors.yearLevel}</p>}
+              {showYearDropdown && (
+                <div className="absolute z-10 w-full mt-1 bg-white border-2 rounded-lg shadow-lg" style={{borderColor: '#111c4e'}}>
+                  {yearOptions.map((option) => (
+                    <button
+                      key={option}
+                      className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                      onClick={() => {
+                        handleInputChange('yearLevel', option)
+                        setShowYearDropdown(false)
+                      }}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Requirements Section 1: C.O.R */}
+            <div className="mt-8">
+              <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                REQUIREMENT/S<span className="text-red-500">*</span>
+              </label>
+              <p className="text-xs text-gray-600 mb-4">
+                Upload a copy of your updated Certificate of Registration (COR). Upload it in PDF format.
+              </p>
+
+              {/* File Upload Area */}
+              <div className="border-2 border-dashed border-gray-400 rounded-xl p-12 flex flex-col items-center justify-center bg-white">
+                <svg className="w-16 h-16 text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+                  <path d="M9 13h2v5a1 1 0 11-2 0v-5z"/>
+                </svg>
+                <span className="text-gray-500">Add/upload a file</span>
               </div>
-              <div>
-                <h3 className="font-bold text-sm mb-1" style={{color: '#111c4e'}}>REMINDER</h3>
-                <p className="text-xs text-gray-600">Please read the classification description for accuracy.</p>
+            </div>
+
+            {/* Requirements Section 2: School ID */}
+            <div className="mt-8">
+              <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                REQUIREMENT/S<span className="text-red-500">*</span>
+              </label>
+              <p className="text-xs text-gray-600 mb-4">
+                Upload a copy of your School ID. Upload it in PDF format.
+              </p>
+
+              {/* File Upload Area */}
+              <div className="border-2 border-dashed border-gray-400 rounded-xl p-12 flex flex-col items-center justify-center bg-white">
+                <svg className="w-16 h-16 text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+                  <path d="M9 13h2v5a1 1 0 11-2 0v-5z"/>
+                </svg>
+                <span className="text-gray-500">Add/upload a file</span>
               </div>
             </div>
-
-            {/* Currently Enrolled Card */}
-            <div className="rounded-xl shadow-lg p-6 text-white" style={{backgroundColor: '#000B3C'}}>
-              <h3 className="font-bold text-sm mb-2">Currently enrolled at UMAK</h3>
-              <p className="text-xs opacity-80">(either HSU or Undergraduate)</p>
-            </div>
-
-            {/* Graduate Card */}
-            <div className="rounded-xl shadow-lg p-6 text-white" style={{backgroundColor: '#f97316'}}>
-              <h3 className="font-bold text-sm mb-2">Graduate at UMAK (HSU/College/Graduate Studies Program)</h3>
-              <p className="text-xs opacity-80">Students who have successfully completed their prescribed course, track, strand, or academic program (HSU, Undergraduate, or Graduate Studies).</p>
-            </div>
-
-            {/* Former/Previous Student Card */}
-            <div className="rounded-xl shadow-lg p-6 text-white" style={{backgroundColor: '#ffc400'}}>
-              <h3 className="font-bold text-sm mb-2" style={{color: '#111c4e'}}>Former/Previous student at UMAK (HSU/College)</h3>
-              <p className="text-xs opacity-80" style={{color: '#111c4e'}}>Students who previously enrolled at the University of Makati (HSU or Undergraduate) but did not complete their prescribed course, track, or strand.</p>
-            </div>
-          </div>
-
-          {/* Classification Dropdown */}
-          <div className="relative mt-6">
-            <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
-              CLASSIFICATION<span className="text-red-500">*</span>
-            </label>
-            <button
-              className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none text-left bg-white flex justify-between items-center ${errors.classification ? 'border-red-500' : ''}`}
-              style={{borderColor: errors.classification ? '#dc2626' : '#111c4e'}}
-              onClick={() => setShowClassificationDropdown(!showClassificationDropdown)}
-            >
-              <span className={formData.classification ? 'text-black' : 'text-gray-400'}>
-                {formData.classification || 'Select your classification'}
-              </span>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {errors.classification && <p className="text-red-500 text-sm mt-1">{errors.classification}</p>}
-            {showClassificationDropdown && (
-              <div className="absolute z-10 w-full mt-1 bg-white border-2 rounded-lg shadow-lg" style={{borderColor: '#111c4e'}}>
-                {classificationOptions.map((option) => (
-                  <button
-                    key={option}
-                    className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                    onClick={() => {
-                      handleInputChange('classification', option)
-                      setShowClassificationDropdown(false)
-                    }}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-center gap-6 mt-12">
+          <div className="flex justify-center gap-4 mt-12">
             <button
               className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
               style={{backgroundColor: '#2563eb', color: 'white'}}
-              onClick={() => navigate('/good-moral', { state: { requesterData: formData } })}
+              onClick={() => navigate('/child-admission-clearance')}
             >
               BACK
             </button>
@@ -328,13 +355,7 @@ function RequesterInfoPage() {
               style={{backgroundColor: '#1F9E55', color: 'white'}}
               onClick={() => {
                 if (validateForm()) {
-                  if (formData.classification === 'Currently enrolled at UMAK (Undergraduate)') {
-                    navigate('/enrolled-student-info', { state: { requesterData: formData } })
-                  } else if (formData.classification === 'Graduate at UMAK (HSU/College/Graduate Studies Program)') {
-                    navigate('/graduate-student-info', { state: { requesterData: formData } })
-                  } else if (formData.classification === 'Former/Previous student at UMAK (HSU/College)') {
-                    navigate('/former-student-info', { state: { requesterData: formData } })
-                  }
+                  navigate('/child-information', { state: { studentData: formData } })
                 }
               }}
             >
@@ -466,4 +487,4 @@ function RequesterInfoPage() {
   )
 }
 
-export default RequesterInfoPage
+export default ChildAdmissionStudentInfoPage

@@ -13,6 +13,27 @@ import GraduateStudentInfoPage from './pages/GraduateStudentInfoPage'
 import GraduateSummaryPage from './pages/GraduateSummaryPage'
 import FormerStudentInfoPage from './pages/FormerStudentInfoPage'
 import FormerStudentSummaryPage from './pages/FormerStudentSummaryPage'
+import ChildAdmissionClearancePage from './pages/ChildAdmissionClearancePage'
+import ChildAdmissionStudentInfoPage from './pages/ChildAdmissionStudentInfoPage'
+import ChildInformationPage from './pages/ChildInformationPage'
+import ChildAdmissionSummaryPage from './pages/ChildAdmissionSummaryPage'
+import UniformExemptionPage from './pages/UniformExemptionPage'
+import UniformExemptionFormPage from './pages/UniformExemptionFormPage'
+import UniformExemptionSummaryPage from './pages/UniformExemptionSummaryPage'
+import CitationSlipFormPage from './pages/CitationSlipFormPage'
+import CitationSlipSummaryPage from './pages/CitationSlipSummaryPage'
+import WorkingStudentFormPage from './pages/WorkingStudentFormPage'
+import WorkingStudentSummaryPage from './pages/WorkingStudentSummaryPage'
+import OJTFormPage from './pages/OJTFormPage'
+import OJTSummaryPage from './pages/OJTSummaryPage'
+import OrganizationEventRequesterPage from './pages/OrganizationEventRequesterPage'
+import OrganizationEventInfoPage from './pages/OrganizationEventInfoPage'
+import OrganizationEventSummaryPage from './pages/OrganizationEventSummaryPage'
+import OrganizationShirtRequesterPage from './pages/OrganizationShirtRequesterPage'
+import OrganizationShirtRequestPage from './pages/OrganizationShirtRequestPage'
+import OrganizationShirtSummaryPage from './pages/OrganizationShirtSummaryPage'
+import OtherExemptionFormPage from './pages/OtherExemptionFormPage'
+import OtherExemptionSummaryPage from './pages/OtherExemptionSummaryPage'
 
 function App() {
   return (
@@ -31,6 +52,27 @@ function App() {
         <Route path="/graduate-summary" element={<GraduateSummaryPage />} />
         <Route path="/former-student-info" element={<FormerStudentInfoPage />} />
         <Route path="/former-student-summary" element={<FormerStudentSummaryPage />} />
+        <Route path="/child-admission-clearance" element={<ChildAdmissionClearancePage />} />
+        <Route path="/child-admission-student-info" element={<ChildAdmissionStudentInfoPage />} />
+        <Route path="/child-information" element={<ChildInformationPage />} />
+        <Route path="/child-admission-summary" element={<ChildAdmissionSummaryPage />} />
+        <Route path="/uniform-exemption" element={<UniformExemptionPage />} />
+        <Route path="/uniform-exemption-form" element={<UniformExemptionFormPage />} />
+        <Route path="/uniform-exemption-summary" element={<UniformExemptionSummaryPage />} />
+        <Route path="/citation-slip-form" element={<CitationSlipFormPage />} />
+        <Route path="/citation-slip-summary" element={<CitationSlipSummaryPage />} />
+        <Route path="/working-student-form" element={<WorkingStudentFormPage />} />
+        <Route path="/working-student-summary" element={<WorkingStudentSummaryPage />} />
+        <Route path="/ojt-form" element={<OJTFormPage />} />
+        <Route path="/ojt-summary" element={<OJTSummaryPage />} />
+        <Route path="/organization-event-requester" element={<OrganizationEventRequesterPage />} />
+        <Route path="/organization-event-info" element={<OrganizationEventInfoPage />} />
+        <Route path="/organization-event-summary" element={<OrganizationEventSummaryPage />} />
+        <Route path="/organization-shirt-requester" element={<OrganizationShirtRequesterPage />} />
+        <Route path="/organization-shirt-request" element={<OrganizationShirtRequestPage />} />
+        <Route path="/organization-shirt-summary" element={<OrganizationShirtSummaryPage />} />
+        <Route path="/other-exemption-form" element={<OtherExemptionFormPage />} />
+        <Route path="/other-exemption-summary" element={<OtherExemptionSummaryPage />} />
       </Routes>
     </Router>
   )

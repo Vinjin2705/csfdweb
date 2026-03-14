@@ -62,7 +62,11 @@ function ServicesPage() {
                 <img src={uniformExemptionLogo} alt="Uniform Exemption" className="w-20 h-20 object-contain" />
               </div>
               <h3 className="text-sm font-bold mb-4 flex-grow" style={{color: '#111c4e'}}>Uniform Exemption</h3>
-              <button className="w-full text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm mt-auto flex-shrink-0" style={{backgroundColor: '#2563eb'}}>
+              <button 
+                className="w-full text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm mt-auto flex-shrink-0" 
+                style={{backgroundColor: '#2563eb'}}
+                onClick={() => navigate('/uniform-exemption')}
+              >
                 Apply
               </button>
             </div>
@@ -73,7 +77,11 @@ function ServicesPage() {
                 <img src={childAdmissionLogo} alt="Child Admission Clearance" className="w-28 h-28 object-contain" />
               </div>
               <h3 className="text-sm font-bold mb-4 flex-grow" style={{color: '#111c4e'}}>Child Admission Clearance</h3>
-              <button className="w-full text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm mt-auto flex-shrink-0" style={{backgroundColor: '#2563eb'}}>
+              <button 
+                className="w-full text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity text-sm mt-auto flex-shrink-0" 
+                style={{backgroundColor: '#2563eb'}}
+                onClick={() => navigate('/child-admission-clearance')}
+              >
                 Apply
               </button>
             </div>

@@ -1,131 +1,86 @@
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
 import Navbar7 from '../components/navbars/Navbar7'
 import footerUmakLogo from '../assets/logos/UMAK LOGO.png'
 import footerCsfdLogo from '../assets/logos/CSFD LOGO.png'
 import cancelIcon from '../assets/icons/line-md_file-cancel-filled.png'
 
-function CitationSlipPage() {
+function ChildAdmissionClearancePage() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const savedData = location.state?.formData || {}
   const [showCancelModal, setShowCancelModal] = useState(false)
-  const [iAgree, setIAgree] = useState(false)
-  const [error, setError] = useState('')
+
+  const steps = [
+    {
+      title: 'Step 1',
+      description: 'Accomplish this Child Admission Clearance (CAC) Form.'
+    },
+    {
+      title: 'Step 2',
+      description: 'Wait for the validation of your request. Once validated, the CAC will be sent to your email within three (3) working days.'
+    },
+    {
+      title: 'Step 3',
+      description: 'Print the emailed Child Authorization Clearance Form with attached picture of the child, Certificate of Registration (COR), and photocopy of your school ID.'
+    },
+    {
+      title: 'Step 4',
+      description: 'Proceed to the Center for Student Formation and Discipline (CSFD) to have your CAC signed with the official University seal.'
+    }
+  ]
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar7 Header */}
       <Navbar7 />
 
-      {/* Citation Slip Process Section */}
-      <section className="px-12 py-16">
+      {/* Application Form Section */}
+      <section className="px-12 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Title */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-black mb-2" style={{color: '#3d3d3d', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>CITATION SLIP</h1>
-            <h2 className="text-3xl font-black" style={{color: '#ffc400', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>PROCESS</h2>
+            <h1 className="text-3xl font-black mb-2" style={{color: '#3d3d3d', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>APPLICATION FORM FOR</h1>
+            <h2 className="text-2xl font-black" style={{color: '#ffc400', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>CHILD AUTHORIZATION CLEARANCE</h2>
           </div>
 
           {/* Steps */}
           <div className="relative">
-            {/* Vertical Line - Centered with check icons */}
-            <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-green-600"></div>
+            {/* Vertical Line */}
+            <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-green-600"></div>
 
-            {/* Step 1 */}
-            <div className="flex gap-6 mb-8 relative items-center">
-              <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
-                <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>Step 1</h3>
-                <p className="text-gray-700">Prepare an apology letter using the provided format.</p>
-              </div>
-            </div>
+            {/* Step Cards */}
+            <div className="space-y-6">
+              {steps.map((step, index) => (
+                <div key={index} className="flex items-center gap-4">
+                  {/* Check Icon */}
+                  <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
 
-            {/* Step 2 */}
-            <div className="flex gap-6 mb-8 relative items-center">
-              <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
-                <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>Step 2</h3>
-                <p className="text-gray-700">Wait for the validation of your request. Once validated, an email will be sent through your email for certification.</p>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="flex gap-6 mb-8 relative items-center">
-              <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
-                <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>Step 3</h3>
-                <p className="text-gray-700">Print the emailed certificate.</p>
-              </div>
-            </div>
-
-            {/* Step 4 */}
-            <div className="flex gap-6 relative items-center">
-              <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
-                <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>Step 4</h3>
-                <p className="text-gray-700">Proceed to the Center for Student Formation and Discipline (CSFD) to have your Citation Slip request certified with the official University seal.</p>
-              </div>
+                  {/* Card */}
+                  <div className="flex-1 bg-white rounded-xl shadow-lg p-6">
+                    <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>{step.title}</h3>
+                    <p className="text-gray-700">{step.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* I Agree Checkbox */}
-          <div className="flex justify-center mt-8 mb-6">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <div 
-                className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${iAgree ? 'bg-green-600 border-green-600' : 'border-gray-400'}`}
-                onClick={() => {
-                  setIAgree(!iAgree)
-                  setError('')
-                }}
-              >
-                {iAgree && (
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </div>
-              <span className="font-bold text-lg" style={{color: '#111c4e'}}>I Agree</span>
-            </label>
-          </div>
-          {error && (
-            <p className="text-center text-sm mb-4" style={{color: '#dc2626'}}>{error}</p>
-          )}
 
           {/* Action Buttons */}
-          <div className="flex justify-center gap-6">
+          <div className="flex justify-center gap-4 mt-12">
             <button
-              className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
+              className="px-12 py-3 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity"
               style={{backgroundColor: '#dc2626', color: 'white'}}
               onClick={() => setShowCancelModal(true)}
             >
               CANCEL
             </button>
             <button
-              className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
+              className="px-12 py-3 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity"
               style={{backgroundColor: '#1F9E55', color: 'white'}}
-              onClick={() => {
-                if (!iAgree) {
-                  setError('Please agree to the terms to proceed')
-                  return
-                }
-                navigate('/citation-slip-form', { state: { formData: savedData } })
-              }}
+              onClick={() => navigate('/child-admission-student-info')}
             >
               PROCEED
             </button>
@@ -254,4 +209,4 @@ function CitationSlipPage() {
   )
 }
 
-export default CitationSlipPage
+export default ChildAdmissionClearancePage

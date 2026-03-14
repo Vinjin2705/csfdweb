@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import Navbar7 from '../components/navbars/Navbar7'
 import footerUmakLogo from '../assets/logos/UMAK LOGO.png'
 import footerCsfdLogo from '../assets/logos/CSFD LOGO.png'
@@ -7,6 +7,8 @@ import cancelIcon from '../assets/icons/line-md_file-cancel-filled.png'
 
 function GoodMoralPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const savedData = location.state?.requesterData || {}
   const [showCancelModal, setShowCancelModal] = useState(false)
   return (
     <div className="min-h-screen bg-gray-100">
@@ -92,7 +94,7 @@ function GoodMoralPage() {
             <button 
               className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
               style={{backgroundColor: '#1F9E55', color: 'white'}}
-              onClick={() => navigate('/requester-info')}
+              onClick={() => navigate('/requester-info', { state: { requesterData: savedData } })}
             >
               Proceed
             </button>

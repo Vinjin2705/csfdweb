@@ -5,41 +5,24 @@ import footerUmakLogo from '../assets/logos/UMAK LOGO.png'
 import footerCsfdLogo from '../assets/logos/CSFD LOGO.png'
 import cancelIcon from '../assets/icons/line-md_file-cancel-filled.png'
 
-function EnrolledStudentInfoPage() {
+function ChildInformationPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const requesterData = location.state?.requesterData || {}
-  const savedFormData = location.state?.formData || {}
+  const studentData = location.state?.studentData || {}
+  const savedChildData = location.state?.childData || {}
   const [showCancelModal, setShowCancelModal] = useState(false)
-  const [showYearDropdown, setShowYearDropdown] = useState(false)
-  const [showPurposeDropdown, setShowPurposeDropdown] = useState(false)
+  const [showSexDropdown, setShowSexDropdown] = useState(false)
   const [errors, setErrors] = useState({})
   const [formData, setFormData] = useState({
-    yearLevel: savedFormData.yearLevel || '',
-    email: savedFormData.email || '',
-    purpose: savedFormData.purpose || ''
+    givenName: savedChildData.givenName || '',
+    surname: savedChildData.surname || '',
+    middleName: savedChildData.middleName || '',
+    extensionName: savedChildData.extensionName || '',
+    sex: savedChildData.sex || '',
+    age: savedChildData.age || ''
   })
 
-  const yearOptions = [
-    'Grade 11',
-    'Grade 12',
-    'First Year level',
-    'Second Year level',
-    'Third Year level',
-    'Fourth Year level',
-    'Fifth Year level'
-  ]
-
-  const purposeOptions = [
-    'Admission to University of Makati (UMak)',
-    'Admission to other University',
-    'Board Examination',
-    'Employment',
-    'Graduation Requirement',
-    'School Requirement',
-    'Internship/OJT requirements',
-    'Others'
-  ]
+  const sexOptions = ['Male', 'Female', 'Other']
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -50,9 +33,10 @@ function EnrolledStudentInfoPage() {
 
   const validateForm = () => {
     const newErrors = {}
-    if (!formData.yearLevel) newErrors.yearLevel = 'Year/Grade level is required'
-    if (!formData.email.trim()) newErrors.email = 'Email address is required'
-    if (!formData.purpose) newErrors.purpose = 'Purpose of request is required'
+    if (!formData.givenName.trim()) newErrors.givenName = 'Given name is required'
+    if (!formData.surname.trim()) newErrors.surname = 'Surname is required'
+    if (!formData.sex) newErrors.sex = 'Sex is required'
+    if (!formData.age.trim()) newErrors.age = 'Age is required'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -62,115 +46,134 @@ function EnrolledStudentInfoPage() {
       {/* Navbar7 Header */}
       <Navbar7 />
 
-      {/* Student Information Section */}
+      {/* Child Information Section */}
       <section className="px-12 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Title */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-black mb-2" style={{color: '#3d3d3d', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>STUDENT</h1>
+            <h1 className="text-4xl font-black mb-2" style={{color: '#3d3d3d', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>CHILD</h1>
             <h2 className="text-3xl font-black" style={{color: '#ffc400', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>INFORMATION</h2>
           </div>
 
           {/* Form */}
           <div className="space-y-6">
-            {/* Year/Grade Level */}
-            <div className="relative">
-              <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
-                YEAR/GRADE LEVEL<span className="text-red-500">*</span>
-              </label>
-              <button
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none text-left bg-white flex justify-between items-center ${errors.yearLevel ? 'border-red-500' : ''}`}
-                style={{borderColor: errors.yearLevel ? '#dc2626' : '#111c4e'}}
-                onClick={() => setShowYearDropdown(!showYearDropdown)}
-              >
-                <span className={formData.yearLevel ? 'text-black' : 'text-gray-400'}>
-                  {formData.yearLevel || 'Select your year/grade level'}
-                </span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {errors.yearLevel && <p className="text-red-500 text-sm mt-1">{errors.yearLevel}</p>}
-              {showYearDropdown && (
-                <div className="absolute z-10 w-full mt-1 bg-white border-2 rounded-lg shadow-lg" style={{borderColor: '#111c4e'}}>
-                  {yearOptions.map((option) => (
-                    <button
-                      key={option}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                      onClick={() => {
-                        handleInputChange('yearLevel', option)
-                        setShowYearDropdown(false)
-                      }}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
+            {/* Row 1: Given Name, Surname, Middle Name */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                  GIVEN NAME<span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter given name"
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ${errors.givenName ? 'border-red-500' : ''}`}
+                  style={{borderColor: errors.givenName ? '#dc2626' : '#111c4e'}}
+                  value={formData.givenName}
+                  onChange={(e) => handleInputChange('givenName', e.target.value)}
+                />
+                {errors.givenName && <p className="text-red-500 text-xs mt-1">{errors.givenName}</p>}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                  SURNAME<span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter surname"
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ${errors.surname ? 'border-red-500' : ''}`}
+                  style={{borderColor: errors.surname ? '#dc2626' : '#111c4e'}}
+                  value={formData.surname}
+                  onChange={(e) => handleInputChange('surname', e.target.value)}
+                />
+                {errors.surname && <p className="text-red-500 text-xs mt-1">{errors.surname}</p>}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                  MIDDLE NAME
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter middle name"
+                  className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2"
+                  style={{borderColor: '#111c4e'}}
+                  value={formData.middleName}
+                  onChange={(e) => handleInputChange('middleName', e.target.value)}
+                />
+              </div>
             </div>
 
-            {/* Email Address */}
-            <div>
-              <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
-                EMAIL ADDRESS<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ${errors.email ? 'border-red-500' : ''}`}
-                style={{borderColor: errors.email ? '#dc2626' : '#111c4e'}}
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-              />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            {/* Row 2: Extension Name, Sex, Age */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                  EXTENSION NAME
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter extension name"
+                  className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2"
+                  style={{borderColor: '#111c4e'}}
+                  value={formData.extensionName}
+                  onChange={(e) => handleInputChange('extensionName', e.target.value)}
+                />
+              </div>
+              <div className="relative">
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                  SEX<span className="text-red-500">*</span>
+                </label>
+                <button
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none text-left bg-white flex justify-between items-center ${errors.sex ? 'border-red-500' : ''}`}
+                  style={{borderColor: errors.sex ? '#dc2626' : '#111c4e'}}
+                  onClick={() => setShowSexDropdown(!showSexDropdown)}
+                >
+                  <span className={formData.sex ? 'text-black' : 'text-gray-400'}>
+                    {formData.sex || 'Select sex'}
+                  </span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {errors.sex && <p className="text-red-500 text-xs mt-1">{errors.sex}</p>}
+                {showSexDropdown && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border-2 rounded-lg shadow-lg" style={{borderColor: '#111c4e'}}>
+                    {sexOptions.map((option) => (
+                      <button
+                        key={option}
+                        className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                        onClick={() => {
+                          handleInputChange('sex', option)
+                          setShowSexDropdown(false)
+                        }}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                  AGE<span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter age"
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 ${errors.age ? 'border-red-500' : ''}`}
+                  style={{borderColor: errors.age ? '#dc2626' : '#111c4e'}}
+                  value={formData.age}
+                  onChange={(e) => handleInputChange('age', e.target.value)}
+                />
+                {errors.age && <p className="text-red-500 text-xs mt-1">{errors.age}</p>}
+              </div>
             </div>
 
-            {/* Purpose of Request */}
-            <div className="relative">
-              <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
-                PURPOSE OF REQUEST<span className="text-red-500">*</span>
-              </label>
-              <button
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none text-left bg-white flex justify-between items-center ${errors.purpose ? 'border-red-500' : ''}`}
-                style={{borderColor: errors.purpose ? '#dc2626' : '#111c4e'}}
-                onClick={() => setShowPurposeDropdown(!showPurposeDropdown)}
-              >
-                <span className={formData.purpose ? 'text-black' : 'text-gray-400'}>
-                  {formData.purpose || 'Select your purpose of request'}
-                </span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {errors.purpose && <p className="text-red-500 text-sm mt-1">{errors.purpose}</p>}
-              {showPurposeDropdown && (
-                <div className="absolute z-10 w-full mt-1 bg-white border-2 rounded-lg shadow-lg" style={{borderColor: '#111c4e'}}>
-                  {purposeOptions.map((option) => (
-                    <button
-                      key={option}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                      onClick={() => {
-                        handleInputChange('purpose', option)
-                        setShowPurposeDropdown(false)
-                      }}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Requirements Section */}
+            {/* Requirements Section: Child Picture */}
             <div className="mt-8">
-              <label className="block text-sm font-semibold mb-2" style={{color: '#111c4e'}}>
-                REQUIREMENT/S
+              <label className="block text-xs font-semibold mb-2" style={{color: '#111c4e'}}>
+                REQUIREMENT/S<span className="text-red-500">*</span>
               </label>
-              <p className="text-sm text-gray-600 mb-4">
-                Certificate of Registration (C.O.R)/Report Card (Form 138)
-              </p>
-              <p className="text-sm text-gray-600 mb-4">
-                *Please upload a latest complete and clear copy of either your Certificate of Registration (C.O.R) or Report Card (Form 138)
+              <p className="text-xs text-gray-600 mb-4">
+                Upload a copy of picture/image of the child. Upload it in PDF format.
               </p>
 
               {/* File Upload Area */}
@@ -185,11 +188,11 @@ function EnrolledStudentInfoPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-center gap-6 mt-12">
+          <div className="flex justify-center gap-4 mt-12">
             <button
               className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
               style={{backgroundColor: '#2563eb', color: 'white'}}
-              onClick={() => navigate('/requester-info', { state: { requesterData } })}
+              onClick={() => navigate('/child-admission-student-info', { state: { studentData } })}
             >
               BACK
             </button>
@@ -205,10 +208,10 @@ function EnrolledStudentInfoPage() {
               style={{backgroundColor: '#1F9E55', color: 'white'}}
               onClick={() => {
                 if (validateForm()) {
-                  navigate('/student-summary', { 
+                  navigate('/child-admission-summary', { 
                     state: { 
-                      formData,
-                      requesterData
+                      studentData,
+                      childData: formData
                     } 
                   })
                 }
@@ -342,4 +345,4 @@ function EnrolledStudentInfoPage() {
   )
 }
 
-export default EnrolledStudentInfoPage
+export default ChildInformationPage
