@@ -193,8 +193,6 @@ function UniformExemptionFormPage() {
                     navigate('/organization-shirt-requester', { state: { formData } })
                   } else if (formData.typeOfRequest === 'Other/s') {
                     navigate('/other-exemption-form', { state: { formData } })
-                  } else {
-                    navigate('/uniform-exemption-summary', { state: { formData } })
                   }
                 }
               }}

@@ -4,7 +4,33 @@ import elementFull from '../assets/images/elementfull.png'
 
 function LoginPage() {
   const [showMenu, setShowMenu] = useState(false)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const navigate = useNavigate()
+
+  const handleLogin = () => {
+    // Clear previous errors
+    setError('')
+
+    // Validation
+    if (!username.trim() || !password.trim()) {
+      setError('Please enter both username and password')
+      return
+    }
+
+    // Admin authentication check
+    // Admin credentials: admin@umak.edu.ph / admin123
+    if (username === 'admin@umak.edu.ph' && password === 'admin123') {
+      // Redirect admin to admin dashboard
+      navigate('/admin-dashboard')
+      return
+    }
+
+    // Regular user authentication (demo - always succeeds for non-admin users)
+    // In production, this would validate against a database
+    navigate('/services')
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -78,6 +104,8 @@ function LoginPage() {
                 placeholder="Enter your username"
                 className="w-full pl-12 pr-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={{borderColor: '#111c4e'}}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
           </div>
@@ -94,16 +122,27 @@ function LoginPage() {
                 placeholder="Enter your password"
                 className="w-full pl-12 pr-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={{borderColor: '#111c4e'}}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
+
+          {error && (
+            <p className="text-sm mb-4 text-center" style={{color: '#dc2626'}}>
+              {error}
+            </p>
+          )}
 
           <div className="mb-6 text-right">
             <a href="#" className="text-sm hover:opacity-80 transition-opacity" style={{color: '#111c4e'}}>Forgot password?</a>
           </div>
 
-          <button className="w-full py-3 rounded-lg font-medium text-white mb-6 hover:opacity-90 transition-opacity"
-                  style={{backgroundColor: '#111c4e'}}>
+          <button 
+            className="w-full py-3 rounded-lg font-medium text-white mb-6 hover:opacity-90 transition-opacity"
+            style={{backgroundColor: '#111c4e'}}
+            onClick={handleLogin}
+          >
             Submit
           </button>
 

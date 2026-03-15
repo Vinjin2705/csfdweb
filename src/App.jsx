@@ -18,7 +18,11 @@ import ChildAdmissionStudentInfoPage from './pages/ChildAdmissionStudentInfoPage
 import ChildInformationPage from './pages/ChildInformationPage'
 import ChildAdmissionSummaryPage from './pages/ChildAdmissionSummaryPage'
 import UniformExemptionPage from './pages/UniformExemptionPage'
+import UniformExemptionAdminPage from './pages/UniformExemptionAdminPage'
+import ChildClearancePage from './pages/ChildClearancePage'
+import CrossDressingPage from './pages/CrossDressingPage'
 import UniformExemptionFormPage from './pages/UniformExemptionFormPage'
+import UniformExemptionStudentInfoPage from './pages/UniformExemptionStudentInfoPage'
 import UniformExemptionSummaryPage from './pages/UniformExemptionSummaryPage'
 import CitationSlipFormPage from './pages/CitationSlipFormPage'
 import CitationSlipSummaryPage from './pages/CitationSlipSummaryPage'
@@ -42,6 +46,10 @@ import ComplainantFormPage from './pages/ComplainantFormPage'
 import RespondentFormPage from './pages/RespondentFormPage'
 import ComplaintDetailsFormPage from './pages/ComplaintDetailsFormPage'
 import ComplaintSummaryPage from './pages/ComplaintSummaryPage'
+import AdminDashboardPage from './pages/AdminDashboardPage'
+import AddAnnouncementPage from './pages/AddAnnouncementPage'
+import DisciplinaryRecordsPage from './pages/DisciplinaryRecordsPage'
+import ComplaintPage from './pages/ComplaintPage'
 
 function App() {
   return (
@@ -66,6 +74,7 @@ function App() {
         <Route path="/child-admission-summary" element={<ChildAdmissionSummaryPage />} />
         <Route path="/uniform-exemption" element={<UniformExemptionPage />} />
         <Route path="/uniform-exemption-form" element={<UniformExemptionFormPage />} />
+        <Route path="/uniform-exemption-student-info" element={<UniformExemptionStudentInfoPage />} />
         <Route path="/uniform-exemption-summary" element={<UniformExemptionSummaryPage />} />
         <Route path="/citation-slip-form" element={<CitationSlipFormPage />} />
         <Route path="/citation-slip-summary" element={<CitationSlipSummaryPage />} />
@@ -89,6 +98,13 @@ function App() {
         <Route path="/respondent-form" element={<RespondentFormPage />} />
         <Route path="/complaint-details" element={<ComplaintDetailsFormPage />} />
         <Route path="/complaint-summary" element={<ComplaintSummaryPage />} />
+        <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
+        <Route path="/add-announcement" element={<AddAnnouncementPage />} />
+        <Route path="/disciplinary-records" element={<DisciplinaryRecordsPage />} />
+        <Route path="/complaint" element={<ComplaintPage />} />
+        <Route path="/uniform-exemption-admin" element={<UniformExemptionAdminPage />} />
+        <Route path="/child-clearance" element={<ChildClearancePage />} />
+        <Route path="/cross-dressing" element={<CrossDressingPage />} />
       </Routes>
     </Router>
   )

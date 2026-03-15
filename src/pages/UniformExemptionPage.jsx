@@ -1,30 +1,29 @@
-import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Navbar7 from '../components/navbars/Navbar7'
 import footerUmakLogo from '../assets/logos/UMAK LOGO.png'
 import footerCsfdLogo from '../assets/logos/CSFD LOGO.png'
-import cancelIcon from '../assets/icons/line-md_file-cancel-filled.png'
 
 function UniformExemptionPage() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const savedData = location.state?.formData || {}
-  const [showCancelModal, setShowCancelModal] = useState(false)
 
   const steps = [
     {
+      step: 1,
       title: 'Step 1',
       description: 'Accomplish this Uniform Exemption Form.'
     },
     {
+      step: 2,
       title: 'Step 2',
       description: 'Wait for the validation of your request. Once validated, an email will be sent through your email for certification.'
     },
     {
+      step: 3,
       title: 'Step 3',
       description: 'Print the emailed certificate.'
     },
     {
+      step: 4,
       title: 'Step 4',
       description: 'Proceed to the Center for Student Formation and Discipline (CSFD) to have your Uniform Exemption request certified with the official University seal.'
     }
@@ -35,61 +34,60 @@ function UniformExemptionPage() {
       {/* Navbar7 Header */}
       <Navbar7 />
 
-      {/* Uniform Exemption Section */}
-      <section className="px-12 py-16">
-        <div className="max-w-4xl mx-auto">
-          {/* Title */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-black mb-2" style={{color: '#3d3d3d', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>UNIFORM EXEMPTION</h1>
-            <h2 className="text-3xl font-black" style={{color: '#ffc400', fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>FORM</h2>
-          </div>
+      {/* Content */}
+      <div className="px-12 py-16 max-w-5xl mx-auto">
+        {/* Title */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-2" style={{color: '#111c4e'}}>UNIFORM EXEMPTION</h1>
+          <h2 className="text-2xl font-bold" style={{color: '#ffc400'}}>FORM</h2>
+        </div>
 
-          {/* Steps */}
-          <div className="relative">
-            {/* Vertical Line */}
-            <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-green-600"></div>
+        {/* Steps */}
+        <div className="relative">
+          {/* Vertical Line */}
+          <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-green-600"></div>
 
-            {/* Step Cards */}
-            <div className="space-y-8">
-              {steps.map((step, index) => (
-                <div key={index} className="flex gap-6 relative items-center">
-                  <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0 z-10">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div className="bg-white rounded-xl shadow-lg p-6 flex-1">
-                    <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>{step.title}</h3>
-                    <p className="text-gray-700">{step.description}</p>
-                  </div>
+          {/* Step Cards */}
+          <div className="space-y-6">
+            {steps.map((item, index) => (
+              <div key={index} className="flex items-start gap-6 relative">
+                {/* Checkmark Circle */}
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 z-10" style={{backgroundColor: '#28a745'}}>
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="flex justify-center gap-6 mt-12">
-            <button
-              className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
-              style={{backgroundColor: '#dc2626', color: 'white'}}
-              onClick={() => setShowCancelModal(true)}
-            >
-              CANCEL
-            </button>
-            <button
-              className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
-              style={{backgroundColor: '#1F9E55', color: 'white'}}
-              onClick={() => navigate('/uniform-exemption-form', { state: { formData: savedData } })}
-            >
-              PROCEED
-            </button>
+                {/* Step Card */}
+                <div className="flex-1 bg-white rounded-xl shadow-lg p-6">
+                  <h3 className="text-xl font-bold mb-2" style={{color: '#111c4e'}}>{item.title}</h3>
+                  <p className="text-gray-700">{item.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
+
+        {/* Action Buttons */}
+        <div className="flex justify-center gap-4 mt-12">
+          <button 
+            className="px-8 py-3 rounded-lg font-bold text-white hover:opacity-90 transition-opacity bg-red-600"
+            onClick={() => navigate('/services')}
+          >
+            CANCEL
+          </button>
+          <button 
+            className="px-8 py-3 rounded-lg font-bold text-white hover:opacity-90 transition-opacity"
+            style={{backgroundColor: '#28a745'}}
+            onClick={() => navigate('/uniform-exemption-form')}
+          >
+            PROCEED
+          </button>
+        </div>
+      </div>
 
       {/* Footer */}
-      <footer className="text-white px-12 py-10 mt-auto"
-               style={{backgroundColor: '#3d3d3d'}}>
+      <footer className="text-white px-12 py-10" style={{backgroundColor: '#3d3d3d'}}>
         <div className="max-w-6xl mx-auto flex flex-row justify-between gap-8">
           {/* Column 1 - Contact Info */}
           <div className="flex-1">
@@ -158,53 +156,6 @@ function UniformExemptionPage() {
           </div>
         </div>
       </footer>
-
-      {/* Cancel Modal */}
-      {showCancelModal && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-          <div className="rounded-xl shadow-2xl p-8 max-w-md w-full mx-4" style={{backgroundColor: '#000B3C'}}>
-            {/* Icon */}
-            <div className="flex justify-center mb-6">
-              <img src={cancelIcon} alt="Cancel" className="w-24 h-24 object-contain" />
-            </div>
-
-            {/* Modal Title */}
-            <div className="text-center mb-4">
-              <h3 className="text-2xl font-black text-white" style={{fontFamily: 'Metropolis, sans-serif', fontWeight: '900'}}>
-                Are you sure you want to cancel?
-              </h3>
-            </div>
-
-            {/* Modal Subtitle */}
-            <div className="text-center mb-8">
-              <p className="text-white text-base">
-                upon cancelling, the request will not be saved.
-              </p>
-            </div>
-
-            {/* Modal Buttons */}
-            <div className="flex justify-center gap-6">
-              <button
-                className="px-12 py-3 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity"
-                style={{backgroundColor: '#dc2626', color: 'white'}}
-                onClick={() => {
-                  setShowCancelModal(false)
-                  navigate('/services')
-                }}
-              >
-                YES
-              </button>
-              <button
-                className="px-12 py-3 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity"
-                style={{backgroundColor: '#1F9E55', color: 'white'}}
-                onClick={() => setShowCancelModal(false)}
-              >
-                NO
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

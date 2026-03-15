@@ -30,30 +30,62 @@ function UniformExemptionSummaryPage() {
 
           {/* Request Information Summary Box */}
           <div className="border-4 rounded-2xl p-6 mb-8" style={{borderColor: '#111c4e', backgroundColor: '#f9f9f9'}}>
-            <h3 className="text-xl font-bold text-center mb-4" style={{color: '#3d3d3d'}}>
-              UNIFORM EXEMPTION <span style={{color: '#ffc400'}}>SUMMARY</span>
+            <h3 className="text-xl font-bold text-center mb-6" style={{color: '#3d3d3d'}}>
+              STUDENT INFORMATION <span style={{color: '#ffc400'}}>SUMMARY</span>
             </h3>
             
-            <div className="space-y-3">
-              {/* TYPE OF REQUEST */}
-              <div>
-                <span className="font-bold" style={{color: '#111c4e'}}>TYPE OF REQUEST: </span>
-                <span style={{color: '#111c4e'}}>{formData.typeOfRequest || 'Not provided'}</span>
+            <div className="space-y-4">
+              {/* Name and Sex */}
+              <div className="flex justify-between">
+                <div>
+                  <span className="font-bold" style={{color: '#111c4e'}}>NAME: </span>
+                  <span style={{color: '#111c4e'}}>
+                    {formData.surname || '<<surname>>'}, {formData.givenName || '<<given_name>>'} {formData.middleName || '<<middle_name>>'} {formData.extensionName || '<<extension_name>>'}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-bold" style={{color: '#111c4e'}}>SEX: </span>
+                  <span style={{color: '#111c4e'}}>{formData.sex || '<<sex>>'}</span>
+                </div>
               </div>
 
-              {/* OTHER SPECIFY */}
-              {formData.typeOfRequest === 'Other/s' && (
-                <div>
-                  <span className="font-bold" style={{color: '#111c4e'}}>SPECIFY: </span>
-                  <span style={{color: '#111c4e'}}>{formData.otherSpecify || 'Not provided'}</span>
-                </div>
-              )}
-
-              {/* REQUIREMENTS */}
+              {/* Student Number */}
               <div>
-                <span className="font-bold" style={{color: '#111c4e'}}>REQUIREMENT/S: </span>
-                <div className="ml-4 mt-1">
-                  <p style={{color: '#111c4e'}}>{'<<requirements>>'}</p>
+                <span className="font-bold" style={{color: '#111c4e'}}>UMAK STUDENT NUMBER: </span>
+                <span style={{color: '#111c4e'}}>{formData.studentNumber || '<<umak_student_number>>'}</span>
+              </div>
+
+              {/* College */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>COLLEGE/INSTITUTE: </span>
+                <span style={{color: '#111c4e'}}>{formData.college || '<<college_institute>>'}</span>
+              </div>
+
+              {/* Year Level */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>YEAR/GRADE LEVEL: </span>
+                <span style={{color: '#111c4e'}}>{formData.yearLevel || '<<year_level>>'}</span>
+              </div>
+
+              {/* Email */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>EMAIL ADDRESS: </span>
+                <span style={{color: '#111c4e'}}>{formData.email || '<<email_address>>'}</span>
+              </div>
+
+              {/* Job Title */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>JOB TITLE: </span>
+                <span style={{color: '#111c4e'}}>{formData.jobTitle || '<<job_title>>'}</span>
+              </div>
+
+              {/* Requirements */}
+              <div>
+                <span className="font-bold" style={{color: '#111c4e'}}>REQUIREMENT/S:</span>
+                <div className="ml-4 mt-2 space-y-1">
+                  <p style={{color: '#111c4e'}}>&lt;&lt;requirements&gt;&gt;</p>
+                  <p style={{color: '#111c4e'}}>&lt;&lt;requirements&gt;&gt;</p>
+                  <p style={{color: '#111c4e'}}>&lt;&lt;requirements&gt;&gt;</p>
                 </div>
               </div>
             </div>
@@ -75,7 +107,7 @@ function UniformExemptionSummaryPage() {
             <button
               className="px-8 py-3 rounded-lg font-medium text-lg hover:opacity-90 transition-opacity"
               style={{backgroundColor: '#2563eb', color: 'white'}}
-              onClick={() => navigate('/uniform-exemption-form', { state: { formData } })}
+              onClick={() => navigate('/uniform-exemption-student-info', { state: { formData } })}
             >
               BACK
             </button>
