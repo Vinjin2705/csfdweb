@@ -38,9 +38,9 @@ function DisciplinaryRecordsPage() {
 
   const menuItems = [
     { label: 'HOME', path: '/admin-dashboard' },
-    { label: 'GOOD MORAL REQUEST', path: '/good-moral' },
-    { label: 'UNIFORM EXEMPTION REQUEST', path: '/uniform-exemption' },
-    { label: 'CHILD ADMISSION REQUEST', path: '/child-admission' },
+    { label: 'GOOD MORAL REQUEST', path: '/admin/good-moral' },
+    { label: 'UNIFORM EXEMPTION REQUEST', path: '/uniform-exemption-admin' },
+    { label: 'CHILD ADMISSION REQUEST', path: '/child-clearance' },
     { label: 'CROSS-DRESSING REQUEST', path: '/cross-dressing' },
     { label: 'COMPLAINT', path: '/complaint' },
     { label: 'DISCIPLINARY RECORDS', path: '/disciplinary-records' },

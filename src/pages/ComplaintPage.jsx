@@ -60,9 +60,9 @@ function ComplaintPage() {
 
   const menuItems = [
     { label: 'HOME', path: '/admin-dashboard' },
-    { label: 'GOOD MORAL REQUEST', path: '/good-moral' },
-    { label: 'UNIFORM EXEMPTION REQUEST', path: '/uniform-exemption' },
-    { label: 'CHILD ADMISSION REQUEST', path: '/child-admission' },
+    { label: 'GOOD MORAL REQUEST', path: '/admin/good-moral' },
+    { label: 'UNIFORM EXEMPTION REQUEST', path: '/uniform-exemption-admin' },
+    { label: 'CHILD ADMISSION REQUEST', path: '/child-clearance' },
     { label: 'CROSS-DRESSING REQUEST', path: '/cross-dressing' },
     { label: 'COMPLAINT', path: '/complaint' },
     { label: 'DISCIPLINARY RECORDS', path: '/disciplinary-records' },
@@ -93,6 +93,10 @@ function ComplaintPage() {
         {labels[category]}
       </span>
     )
+  }
+
+  const handleEvaluateClick = (complaint) => {
+    navigate('/complaint-evaluate', { state: { complaint } })
   }
 
   const getFilterButtons = () => {
@@ -264,6 +268,7 @@ function ComplaintPage() {
                     <button 
                       className="px-6 py-1.5 rounded text-xs font-medium text-gray-800 hover:opacity-90 transition-opacity"
                       style={{ backgroundColor: '#ffc400' }}
+                      onClick={() => handleEvaluateClick(complaint)}
                     >
                       Evaluate
                     </button>
@@ -274,6 +279,7 @@ function ComplaintPage() {
                       <button 
                         className="px-6 py-1.5 rounded text-xs font-medium text-gray-800 hover:opacity-90 transition-opacity"
                         style={{ backgroundColor: '#ffc400' }}
+                        onClick={() => handleEvaluateClick(complaint)}
                       >
                         Evaluate
                       </button>

@@ -21,6 +21,8 @@ import UniformExemptionPage from './pages/UniformExemptionPage'
 import UniformExemptionAdminPage from './pages/UniformExemptionAdminPage'
 import ChildClearancePage from './pages/ChildClearancePage'
 import CrossDressingPage from './pages/CrossDressingPage'
+import GoodMoralAdminPage from './pages/GoodMoralAdminPage'
+import GoodMoralProcessingPage from './pages/GoodMoralProcessingPage'
 import UniformExemptionFormPage from './pages/UniformExemptionFormPage'
 import UniformExemptionStudentInfoPage from './pages/UniformExemptionStudentInfoPage'
 import UniformExemptionSummaryPage from './pages/UniformExemptionSummaryPage'
@@ -46,6 +48,7 @@ import ComplainantFormPage from './pages/ComplainantFormPage'
 import RespondentFormPage from './pages/RespondentFormPage'
 import ComplaintDetailsFormPage from './pages/ComplaintDetailsFormPage'
 import ComplaintSummaryPage from './pages/ComplaintSummaryPage'
+import ComplaintEvaluatePage from './pages/ComplaintEvaluatePage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import AddAnnouncementPage from './pages/AddAnnouncementPage'
 import DisciplinaryRecordsPage from './pages/DisciplinaryRecordsPage'
@@ -99,12 +102,15 @@ function App() {
         <Route path="/complaint-details" element={<ComplaintDetailsFormPage />} />
         <Route path="/complaint-summary" element={<ComplaintSummaryPage />} />
         <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
+        <Route path="/complaint-evaluate" element={<ComplaintEvaluatePage />} />
         <Route path="/add-announcement" element={<AddAnnouncementPage />} />
         <Route path="/disciplinary-records" element={<DisciplinaryRecordsPage />} />
         <Route path="/complaint" element={<ComplaintPage />} />
         <Route path="/uniform-exemption-admin" element={<UniformExemptionAdminPage />} />
         <Route path="/child-clearance" element={<ChildClearancePage />} />
         <Route path="/cross-dressing" element={<CrossDressingPage />} />
+        <Route path="/admin/good-moral" element={<GoodMoralAdminPage />} />
+        <Route path="/admin/good-moral-processing" element={<GoodMoralProcessingPage />} />
       </Routes>
     </Router>
   )

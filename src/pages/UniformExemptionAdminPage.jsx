@@ -54,7 +54,7 @@ function UniformExemptionPage() {
 
   const menuItems = [
     { label: 'HOME', path: '/admin-dashboard' },
-    { label: 'GOOD MORAL REQUEST', path: '/good-moral' },
+    { label: 'GOOD MORAL REQUEST', path: '/admin/good-moral' },
     { label: 'UNIFORM EXEMPTION REQUEST', path: '/uniform-exemption-admin' },
     { label: 'CHILD ADMISSION REQUEST', path: '/child-clearance' },
     { label: 'CROSS-DRESSING REQUEST', path: '/cross-dressing' },
