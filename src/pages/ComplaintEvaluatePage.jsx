@@ -9,6 +9,7 @@ function ComplaintEvaluatePage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [editingSection, setEditingSection] = useState(null)
   
   // Get complaint data from navigation state or use defaults
   const complaint = location.state?.complaint || {
@@ -20,6 +21,203 @@ function ComplaintEvaluatePage() {
     dateFiled: 'March 15, 2024',
     complainantName: 'John Doe',
     college: 'CCIS'
+  }
+
+  // State for editable data
+  const [mainComplainant, setMainComplainant] = useState({
+    name: complaint.complainantName || 'John Doe',
+    sex: 'Male',
+    yearLevel: '3rd Year',
+    college: complaint.college || 'CCIS'
+  })
+
+  const [coComplainant, setCoComplainant] = useState({
+    name: 'Jane Smith',
+    sex: 'Female',
+    yearLevel: '2nd Year',
+    college: 'CBM'
+  })
+
+  const [mainRespondent, setMainRespondent] = useState({
+    name: 'Alex Rivera',
+    sex: 'Male',
+    yearLevel: '4th Year',
+    college: 'CCIS'
+  })
+
+  const [coRespondent, setCoRespondent] = useState({
+    name: 'Maria Garcia',
+    sex: 'Female',
+    yearLevel: '3rd Year',
+    college: 'CBM'
+  })
+
+  const [progressList, setProgressList] = useState([
+    {
+      id: 1,
+      subject: 'Investigation Ongoing',
+      date: 'March 16, 2024',
+      description: 'Witnesses interviewed, evidence collected. Initial assessment completed. Waiting for respondent\'s statement.',
+      documents: 'interview_record.pdf, investigation_notes.docx'
+    }
+  ])
+
+  // State for additional complainants and respondents (added via the add buttons)
+  const [additionalComplainants, setAdditionalComplainants] = useState([])
+  const [additionalRespondents, setAdditionalRespondents] = useState([])
+
+  // State for version history tracking - initialize from complaint if it exists
+  const [versionHistory, setVersionHistory] = useState(
+    complaint.versionHistory || [
+      { id: 1, type: 'Original', date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), modified: '' }
+    ]
+  )
+
+  // State for showing add forms
+  const [showAddComplainant, setShowAddComplainant] = useState(false)
+  const [showAddRespondent, setShowAddRespondent] = useState(false)
+  const [showAddProgress, setShowAddProgress] = useState(false)
+  const [newComplainant, setNewComplainant] = useState({ name: '', sex: '', yearLevel: '', college: '' })
+  const [newRespondent, setNewRespondent] = useState({ name: '', sex: '', yearLevel: '', college: '' })
+  const [newProgress, setNewProgress] = useState({ subject: '', date: '', description: '', documents: '' })
+
+  // Edit form state
+  const [editForm, setEditForm] = useState({})
+
+  const handleEdit = (section, data) => {
+    setEditingSection(section)
+    setEditForm({ ...data })
+  }
+
+  const handleDelete = (section, id = null) => {
+    if (section === 'mainComplainant') {
+      setMainComplainant({ name: '', sex: '', yearLevel: '', college: '' })
+    } else if (section === 'coComplainant') {
+      setCoComplainant({ name: '', sex: '', yearLevel: '', college: '' })
+    } else if (section === 'mainRespondent') {
+      setMainRespondent({ name: '', sex: '', yearLevel: '', college: '' })
+    } else if (section === 'coRespondent') {
+      setCoRespondent({ name: '', sex: '', yearLevel: '', college: '' })
+    } else if (section === 'progress' && id) {
+      setProgressList(prev => prev.filter(p => p.id !== id))
+    } else if (section === 'additionalComplainant' && id) {
+      setAdditionalComplainants(prev => prev.filter(c => c.id !== id))
+    } else if (section === 'additionalRespondent' && id) {
+      setAdditionalRespondents(prev => prev.filter(r => r.id !== id))
+    }
+  }
+
+  const handleSaveEdit = () => {
+    if (editingSection === 'mainComplainant') {
+      setMainComplainant(editForm)
+    } else if (editingSection === 'coComplainant') {
+      setCoComplainant(editForm)
+    } else if (editingSection === 'mainRespondent') {
+      setMainRespondent(editForm)
+    } else if (editingSection === 'coRespondent') {
+      setCoRespondent(editForm)
+    } else if (editingSection?.startsWith('progress-')) {
+      setProgressList(prev => prev.map(p => p.id === editForm.id ? editForm : p))
+    }
+    setEditingSection(null)
+    setEditForm({})
+    // Note: We don't track version here anymore - only track on main save
+  }
+
+  const handleCancelEdit = () => {
+    setEditingSection(null)
+    setEditForm({})
+  }
+
+  const handleInputChange = (field, value) => {
+    setEditForm(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleAddComplainant = () => {
+    if (newComplainant.name) {
+      const newId = additionalComplainants.length > 0 ? Math.max(...additionalComplainants.map(c => c.id)) + 1 : 1
+      setAdditionalComplainants(prev => [...prev, { ...newComplainant, id: newId }])
+      setNewComplainant({ name: '', sex: '', yearLevel: '', college: '' })
+      setShowAddComplainant(false)
+      // Note: We don't track version here anymore - only track on main save
+    }
+  }
+
+  const handleAddRespondent = () => {
+    if (newRespondent.name) {
+      const newId = additionalRespondents.length > 0 ? Math.max(...additionalRespondents.map(r => r.id)) + 1 : 1
+      setAdditionalRespondents(prev => [...prev, { ...newRespondent, id: newId }])
+      setNewRespondent({ name: '', sex: '', yearLevel: '', college: '' })
+      setShowAddRespondent(false)
+      // Note: We don't track version here anymore - only track on main save
+    }
+  }
+
+  const handleCancelAddComplainant = () => {
+    setShowAddComplainant(false)
+    setNewComplainant({ name: '', sex: '', yearLevel: '', college: '' })
+  }
+
+  const handleCancelAddRespondent = () => {
+    setShowAddRespondent(false)
+    setNewRespondent({ name: '', sex: '', yearLevel: '', college: '' })
+  }
+
+  const handleAddProgress = () => {
+    if (newProgress.subject) {
+      const newId = progressList.length > 0 ? Math.max(...progressList.map(p => p.id)) + 1 : 1
+      setProgressList(prev => [...prev, { ...newProgress, id: newId }])
+      setNewProgress({ subject: '', date: '', description: '', documents: '' })
+      setShowAddProgress(false)
+      // Note: We don't track version here anymore - only track on main save
+    }
+  }
+
+  const handleCancelAddProgress = () => {
+    setShowAddProgress(false)
+    setNewProgress({ subject: '', date: '', description: '', documents: '' })
+  }
+
+  const handleSaveComplaint = () => {
+    // Check if any changes were made during this session
+    const hasAdditionalComplainants = additionalComplainants.length > 0
+    const hasAdditionalRespondents = additionalRespondents.length > 0
+    const hasAdditionalProgress = progressList.length > 1
+    
+    let finalVersionHistory = [...versionHistory]
+    
+    // If any additions were made, add a new version entry
+    if (hasAdditionalComplainants || hasAdditionalRespondents || hasAdditionalProgress) {
+      const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      const modificationNumber = versionHistory.length // This gives us the next number (1 = Original, 2 = First, etc.)
+      const modifierText = modificationNumber === 1 ? 'First' : modificationNumber === 2 ? 'Second' : modificationNumber === 3 ? 'Third' : `${modificationNumber}th`
+      
+      finalVersionHistory = [
+        ...versionHistory,
+        { 
+          id: versionHistory.length + 1, 
+          type: `${modifierText} Modifications`, 
+          date: currentDate, 
+          modified: currentDate 
+        }
+      ]
+    }
+    
+    // Build the final updated complaint data with version history
+    const updatedComplaint = {
+      ...complaint,
+      mainComplainant,
+      coComplainant,
+      mainRespondent,
+      coRespondent,
+      additionalComplainants,
+      additionalRespondents,
+      progressList,
+      versionHistory: finalVersionHistory
+    }
+    
+    // Navigate back to complaint list with the saved data
+    navigate('/complaint', { state: { updatedComplaint } })
   }
 
   const menuItems = [
@@ -169,34 +367,87 @@ function ComplaintEvaluatePage() {
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Main Complainant</h3>
                 <div className="flex gap-2">
-                  <button className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                  {editingSection === 'mainComplainant' ? (
+                    <>
+                      <button 
+                        className="p-1 text-green-600 hover:text-green-800 hover:bg-green-50 rounded"
+                        onClick={handleSaveEdit}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded"
+                        onClick={handleCancelEdit}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button 
+                        className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded"
+                        onClick={() => handleEdit('mainComplainant', mainComplainant)}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                        onClick={() => handleDelete('mainComplainant')}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Name</label>
-                  <input type="text" value={complaint.complainantName} readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'mainComplainant' ? editForm.name : mainComplainant.name} 
+                    readOnly={editingSection !== 'mainComplainant'}
+                    onChange={(e) => editingSection === 'mainComplainant' && handleInputChange('name', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'mainComplainant' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Sex</label>
-                  <input type="text" value="Male" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'mainComplainant' ? editForm.sex : mainComplainant.sex} 
+                    readOnly={editingSection !== 'mainComplainant'}
+                    onChange={(e) => editingSection === 'mainComplainant' && handleInputChange('sex', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'mainComplainant' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Year/Grade Level</label>
-                  <input type="text" value="3rd Year" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'mainComplainant' ? editForm.yearLevel : mainComplainant.yearLevel} 
+                    readOnly={editingSection !== 'mainComplainant'}
+                    onChange={(e) => editingSection === 'mainComplainant' && handleInputChange('yearLevel', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'mainComplainant' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">College/Institute</label>
-                  <input type="text" value={complaint.college} readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'mainComplainant' ? editForm.college : mainComplainant.college} 
+                    readOnly={editingSection !== 'mainComplainant'}
+                    onChange={(e) => editingSection === 'mainComplainant' && handleInputChange('college', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'mainComplainant' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
               </div>
             </div>
@@ -206,71 +457,303 @@ function ComplaintEvaluatePage() {
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Co-Complainant</h3>
                 <div className="flex gap-2">
-                  <button className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                  {editingSection === 'coComplainant' ? (
+                    <>
+                      <button 
+                        className="p-1 text-green-600 hover:text-green-800 hover:bg-green-50 rounded"
+                        onClick={handleSaveEdit}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded"
+                        onClick={handleCancelEdit}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button 
+                        className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded"
+                        onClick={() => handleEdit('coComplainant', coComplainant)}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                        onClick={() => handleDelete('coComplainant')}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Name</label>
-                  <input type="text" value="Jane Smith" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'coComplainant' ? editForm.name : coComplainant.name} 
+                    readOnly={editingSection !== 'coComplainant'}
+                    onChange={(e) => editingSection === 'coComplainant' && handleInputChange('name', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'coComplainant' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Sex</label>
-                  <input type="text" value="Female" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'coComplainant' ? editForm.sex : coComplainant.sex} 
+                    readOnly={editingSection !== 'coComplainant'}
+                    onChange={(e) => editingSection === 'coComplainant' && handleInputChange('sex', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'coComplainant' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Year/Grade Level</label>
-                  <input type="text" value="2nd Year" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'coComplainant' ? editForm.yearLevel : coComplainant.yearLevel} 
+                    readOnly={editingSection !== 'coComplainant'}
+                    onChange={(e) => editingSection === 'coComplainant' && handleInputChange('yearLevel', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'coComplainant' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">College/Institute</label>
-                  <input type="text" value="CBM" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'coComplainant' ? editForm.college : coComplainant.college} 
+                    readOnly={editingSection !== 'coComplainant'}
+                    onChange={(e) => editingSection === 'coComplainant' && handleInputChange('college', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'coComplainant' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
               </div>
             </div>
+
+            {/* Additional Complainants */}
+            {additionalComplainants.map((complainant) => (
+              <div key={complainant.id} className="mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Additional Complainant #{complainant.id}</h3>
+                  <div className="flex gap-2">
+                    <button 
+                      className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                      onClick={() => handleDelete('additionalComplainant', complainant.id)}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Name</label>
+                    <input 
+                      type="text" 
+                      value={complainant.name}
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-gray-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Sex</label>
+                    <input 
+                      type="text" 
+                      value={complainant.sex}
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-gray-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Year/Grade Level</label>
+                    <input 
+                      type="text" 
+                      value={complainant.yearLevel}
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-gray-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">College/Institute</label>
+                    <input 
+                      type="text" 
+                      value={complainant.college}
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-gray-100"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Add Complainant Form - appears below all complainants */}
+            {showAddComplainant && (
+              <div className="mb-6 p-4 border-2 border-blue-400 rounded-lg bg-blue-50">
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-sm font-bold text-blue-800 uppercase tracking-wide">Add New Complainant</h3>
+                  <div className="flex gap-2">
+                    <button 
+                      className="p-1 text-green-600 hover:text-green-800 hover:bg-green-100 rounded"
+                      onClick={handleAddComplainant}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </button>
+                    <button 
+                      className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded"
+                      onClick={handleCancelAddComplainant}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Name</label>
+                    <input 
+                      type="text" 
+                      value={newComplainant.name}
+                      onChange={(e) => setNewComplainant(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Sex</label>
+                    <input 
+                      type="text" 
+                      value={newComplainant.sex}
+                      onChange={(e) => setNewComplainant(prev => ({ ...prev, sex: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter sex"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Year/Grade Level</label>
+                    <input 
+                      type="text" 
+                      value={newComplainant.yearLevel}
+                      onChange={(e) => setNewComplainant(prev => ({ ...prev, yearLevel: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter year level"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">College/Institute</label>
+                    <input 
+                      type="text" 
+                      value={newComplainant.college}
+                      onChange={(e) => setNewComplainant(prev => ({ ...prev, college: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter college"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Main Respondent */}
             <div className="mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Main Respondent</h3>
                 <div className="flex gap-2">
-                  <button className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                  {editingSection === 'mainRespondent' ? (
+                    <>
+                      <button 
+                        className="p-1 text-green-600 hover:text-green-800 hover:bg-green-50 rounded"
+                        onClick={handleSaveEdit}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded"
+                        onClick={handleCancelEdit}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button 
+                        className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded"
+                        onClick={() => handleEdit('mainRespondent', mainRespondent)}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                        onClick={() => handleDelete('mainRespondent')}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Name</label>
-                  <input type="text" value="Alex Rivera" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'mainRespondent' ? editForm.name : mainRespondent.name} 
+                    readOnly={editingSection !== 'mainRespondent'}
+                    onChange={(e) => editingSection === 'mainRespondent' && handleInputChange('name', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'mainRespondent' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Sex</label>
-                  <input type="text" value="Male" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'mainRespondent' ? editForm.sex : mainRespondent.sex} 
+                    readOnly={editingSection !== 'mainRespondent'}
+                    onChange={(e) => editingSection === 'mainRespondent' && handleInputChange('sex', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'mainRespondent' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Year/Grade Level</label>
-                  <input type="text" value="4th Year" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'mainRespondent' ? editForm.yearLevel : mainRespondent.yearLevel} 
+                    readOnly={editingSection !== 'mainRespondent'}
+                    onChange={(e) => editingSection === 'mainRespondent' && handleInputChange('yearLevel', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'mainRespondent' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">College/Institute</label>
-                  <input type="text" value="CCIS" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'mainRespondent' ? editForm.college : mainRespondent.college} 
+                    readOnly={editingSection !== 'mainRespondent'}
+                    onChange={(e) => editingSection === 'mainRespondent' && handleInputChange('college', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'mainRespondent' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
               </div>
             </div>
@@ -280,102 +763,412 @@ function ComplaintEvaluatePage() {
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Co-Respondent</h3>
                 <div className="flex gap-2">
-                  <button className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                  {editingSection === 'coRespondent' ? (
+                    <>
+                      <button 
+                        className="p-1 text-green-600 hover:text-green-800 hover:bg-green-50 rounded"
+                        onClick={handleSaveEdit}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded"
+                        onClick={handleCancelEdit}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button 
+                        className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded"
+                        onClick={() => handleEdit('coRespondent', coRespondent)}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button 
+                        className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                        onClick={() => handleDelete('coRespondent')}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Name</label>
-                  <input type="text" value="Maria Garcia" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'coRespondent' ? editForm.name : coRespondent.name} 
+                    readOnly={editingSection !== 'coRespondent'}
+                    onChange={(e) => editingSection === 'coRespondent' && handleInputChange('name', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'coRespondent' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Sex</label>
-                  <input type="text" value="Female" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'coRespondent' ? editForm.sex : coRespondent.sex} 
+                    readOnly={editingSection !== 'coRespondent'}
+                    onChange={(e) => editingSection === 'coRespondent' && handleInputChange('sex', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'coRespondent' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Year/Grade Level</label>
-                  <input type="text" value="3rd Year" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'coRespondent' ? editForm.yearLevel : coRespondent.yearLevel} 
+                    readOnly={editingSection !== 'coRespondent'}
+                    onChange={(e) => editingSection === 'coRespondent' && handleInputChange('yearLevel', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'coRespondent' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">College/Institute</label>
-                  <input type="text" value="CBM" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
+                  <input 
+                    type="text" 
+                    value={editingSection === 'coRespondent' ? editForm.college : coRespondent.college} 
+                    readOnly={editingSection !== 'coRespondent'}
+                    onChange={(e) => editingSection === 'coRespondent' && handleInputChange('college', e.target.value)}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === 'coRespondent' ? 'bg-white' : 'bg-gray-100'}`}
+                  />
                 </div>
               </div>
             </div>
 
+            {/* Additional Respondents */}
+            {additionalRespondents.map((respondent) => (
+              <div key={respondent.id} className="mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Additional Respondent #{respondent.id}</h3>
+                  <div className="flex gap-2">
+                    <button 
+                      className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                      onClick={() => handleDelete('additionalRespondent', respondent.id)}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Name</label>
+                    <input 
+                      type="text" 
+                      value={respondent.name}
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-gray-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Sex</label>
+                    <input 
+                      type="text" 
+                      value={respondent.sex}
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-gray-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Year/Grade Level</label>
+                    <input 
+                      type="text" 
+                      value={respondent.yearLevel}
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-gray-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">College/Institute</label>
+                    <input 
+                      type="text" 
+                      value={respondent.college}
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-gray-100"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Add Respondent Form - appears below all respondents */}
+            {showAddRespondent && (
+              <div className="mb-6 p-4 border-2 border-blue-400 rounded-lg bg-blue-50">
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-sm font-bold text-blue-800 uppercase tracking-wide">Add New Respondent</h3>
+                  <div className="flex gap-2">
+                    <button 
+                      className="p-1 text-green-600 hover:text-green-800 hover:bg-green-100 rounded"
+                      onClick={handleAddRespondent}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </button>
+                    <button 
+                      className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded"
+                      onClick={handleCancelAddRespondent}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Name</label>
+                    <input 
+                      type="text" 
+                      value={newRespondent.name}
+                      onChange={(e) => setNewRespondent(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Sex</label>
+                    <input 
+                      type="text" 
+                      value={newRespondent.sex}
+                      onChange={(e) => setNewRespondent(prev => ({ ...prev, sex: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter sex"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Year/Grade Level</label>
+                    <input 
+                      type="text" 
+                      value={newRespondent.yearLevel}
+                      onChange={(e) => setNewRespondent(prev => ({ ...prev, yearLevel: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter year level"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">College/Institute</label>
+                    <input 
+                      type="text" 
+                      value={newRespondent.college}
+                      onChange={(e) => setNewRespondent(prev => ({ ...prev, college: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter college"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Progress */}
-            <div className="mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Progress</h3>
-                <div className="flex gap-2">
-                  <button className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+            {progressList.map((progress) => (
+              <div key={progress.id} className="mb-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Progress #{progress.id}</h3>
+                  <div className="flex gap-2">
+                    {editingSection === `progress-${progress.id}` ? (
+                      <>
+                        <button 
+                          className="p-1 text-green-600 hover:text-green-800 hover:bg-green-50 rounded"
+                          onClick={handleSaveEdit}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </button>
+                        <button 
+                          className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded"
+                          onClick={handleCancelEdit}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button 
+                          className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded"
+                          onClick={() => handleEdit(`progress-${progress.id}`, progress)}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button 
+                          className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                          onClick={() => handleDelete('progress', progress.id)}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Subject</label>
+                    <input 
+                      type="text" 
+                      value={editingSection === `progress-${progress.id}` ? editForm.subject : progress.subject} 
+                      readOnly={editingSection !== `progress-${progress.id}`}
+                      onChange={(e) => editingSection === `progress-${progress.id}` && handleInputChange('subject', e.target.value)}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === `progress-${progress.id}` ? 'bg-white' : 'bg-gray-100'}`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Date</label>
+                    <input 
+                      type="text" 
+                      value={editingSection === `progress-${progress.id}` ? editForm.date : progress.date} 
+                      readOnly={editingSection !== `progress-${progress.id}`}
+                      onChange={(e) => editingSection === `progress-${progress.id}` && handleInputChange('date', e.target.value)}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === `progress-${progress.id}` ? 'bg-white' : 'bg-gray-100'}`}
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-xs text-gray-600 mb-1">Description</label>
+                    <textarea 
+                      value={editingSection === `progress-${progress.id}` ? editForm.description : progress.description} 
+                      readOnly={editingSection !== `progress-${progress.id}`}
+                      onChange={(e) => editingSection === `progress-${progress.id}` && handleInputChange('description', e.target.value)}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded text-sm h-20 resize-none ${editingSection === `progress-${progress.id}` ? 'bg-white' : 'bg-gray-100'}`}
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-xs text-gray-600 mb-1">Supporting Documents</label>
+                    <input 
+                      type="text" 
+                      value={editingSection === `progress-${progress.id}` ? editForm.documents : progress.documents} 
+                      readOnly={editingSection !== `progress-${progress.id}`}
+                      onChange={(e) => editingSection === `progress-${progress.id}` && handleInputChange('documents', e.target.value)}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded text-sm ${editingSection === `progress-${progress.id}` ? 'bg-white' : 'bg-gray-100'}`}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs text-gray-600 mb-1">Subject</label>
-                  <input type="text" value="Investigation Ongoing" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-600 mb-1">Date</label>
-                  <input type="text" value="March 16, 2024" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-xs text-gray-600 mb-1">Description</label>
-                  <textarea readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white h-20 resize-none" value="Witnesses interviewed, evidence collected. Initial assessment completed. Waiting for respondent's statement." />
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-xs text-gray-600 mb-1">Supporting Documents</label>
-                  <input type="text" value="interview_record.pdf, investigation_notes.docx" readOnly className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white" />
-                </div>
-              </div>
-            </div>
+            ))}
 
             {/* Add Buttons */}
             <div className="flex flex-wrap gap-3 mb-6">
-              <button className="flex items-center gap-2 px-4 py-2 border border-gray-400 rounded text-sm hover:bg-gray-50 transition-colors">
+              <button 
+                className="flex items-center gap-2 px-4 py-2 border border-gray-400 rounded text-sm hover:bg-gray-50 transition-colors"
+                onClick={() => setShowAddComplainant(true)}
+              >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
                 Add Complainant
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 border border-gray-400 rounded text-sm hover:bg-gray-50 transition-colors">
+              <button 
+                className="flex items-center gap-2 px-4 py-2 border border-gray-400 rounded text-sm hover:bg-gray-50 transition-colors"
+                onClick={() => setShowAddRespondent(true)}
+              >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
                 Add Respondent
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 border border-gray-400 rounded text-sm hover:bg-gray-50 transition-colors">
+              <button 
+                className="flex items-center gap-2 px-4 py-2 border border-gray-400 rounded text-sm hover:bg-gray-50 transition-colors"
+                onClick={() => setShowAddProgress(true)}
+              >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Add Complaint
+                Add Progress
               </button>
             </div>
+
+            {/* Add Progress Form - appears inline */}
+            {showAddProgress && (
+              <div className="mb-6 p-4 border-2 border-blue-400 rounded-lg bg-blue-50">
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-sm font-bold text-blue-800 uppercase tracking-wide">Add New Progress</h3>
+                  <div className="flex gap-2">
+                    <button 
+                      className="p-1 text-green-600 hover:text-green-800 hover:bg-green-100 rounded"
+                      onClick={handleAddProgress}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </button>
+                    <button 
+                      className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded"
+                      onClick={handleCancelAddProgress}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Subject</label>
+                    <input 
+                      type="text" 
+                      value={newProgress.subject}
+                      onChange={(e) => setNewProgress(prev => ({ ...prev, subject: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter subject"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Date</label>
+                    <input 
+                      type="text" 
+                      value={newProgress.date}
+                      onChange={(e) => setNewProgress(prev => ({ ...prev, date: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter date"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-xs text-gray-600 mb-1">Description</label>
+                    <textarea 
+                      value={newProgress.description}
+                      onChange={(e) => setNewProgress(prev => ({ ...prev, description: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white h-20 resize-none"
+                      placeholder="Enter description"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-xs text-gray-600 mb-1">Supporting Documents</label>
+                    <input 
+                      type="text" 
+                      value={newProgress.documents}
+                      onChange={(e) => setNewProgress(prev => ({ ...prev, documents: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                      placeholder="Enter documents (comma separated)"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer */}
           <div className="px-6 py-4 border-t border-gray-300 flex justify-center gap-4 bg-gray-50">
             <button
-              onClick={() => navigate('/complaint')}
+              onClick={handleSaveComplaint}
               className="px-8 py-2 bg-green-600 text-white rounded font-medium hover:bg-green-700 transition-colors"
             >
               SAVE THE COMPLAINT INFORMATION

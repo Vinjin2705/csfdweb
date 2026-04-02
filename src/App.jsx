@@ -49,8 +49,12 @@ import RespondentFormPage from './pages/RespondentFormPage'
 import ComplaintDetailsFormPage from './pages/ComplaintDetailsFormPage'
 import ComplaintSummaryPage from './pages/ComplaintSummaryPage'
 import ComplaintEvaluatePage from './pages/ComplaintEvaluatePage'
+import ComplaintSummaryView from './pages/ComplaintSummaryView'
+import ComplaintHistoryListView from './pages/ComplaintHistoryListView'
+import UserComplaintMonitoringPage from './pages/UserComplaintMonitoringPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import AddAnnouncementPage from './pages/AddAnnouncementPage'
+import AddProgressPage from './pages/AddProgressPage'
 import DisciplinaryRecordsPage from './pages/DisciplinaryRecordsPage'
 import ComplaintPage from './pages/ComplaintPage'
 
@@ -103,7 +107,11 @@ function App() {
         <Route path="/complaint-summary" element={<ComplaintSummaryPage />} />
         <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
         <Route path="/complaint-evaluate" element={<ComplaintEvaluatePage />} />
+        <Route path="/complaint-monitoring" element={<UserComplaintMonitoringPage />} />
+        <Route path="/complaint-summary-view" element={<ComplaintSummaryView />} />
+        <Route path="/complaint-history" element={<ComplaintHistoryListView />} />
         <Route path="/add-announcement" element={<AddAnnouncementPage />} />
+        <Route path="/add-progress" element={<AddProgressPage />} />
         <Route path="/disciplinary-records" element={<DisciplinaryRecordsPage />} />
         <Route path="/complaint" element={<ComplaintPage />} />
         <Route path="/uniform-exemption-admin" element={<UniformExemptionAdminPage />} />

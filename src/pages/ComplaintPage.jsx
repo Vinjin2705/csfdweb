@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import umakLogo from '../assets/logos/UMAK LOGO.png'
 import csfdLogo from '../assets/logos/CSFD LOGO.png'
 import footerUmakLogo from '../assets/logos/UMAK LOGO.png'
@@ -7,6 +7,7 @@ import footerCsfdLogo from '../assets/logos/CSFD LOGO.png'
 
 function ComplaintPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isFabMenuOpen, setIsFabMenuOpen] = useState(false)
   const [activeTab, setActiveTab] = useState('all') // 'all', 'pending', 'resolved'
@@ -14,8 +15,8 @@ function ComplaintPage() {
   const [searchBy, setSearchBy] = useState('Complaint No.')
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Sample complaint data
-  const complaints = [
+  // Sample complaint data with history array for version tracking
+  const [complaints, setComplaints] = useState([
     {
       id: 1,
       complaintNo: '2024-001',
@@ -24,7 +25,13 @@ function ComplaintPage() {
       complainantName: 'John Doe',
       college: 'CCIS',
       dateFiled: 'March 15, 2024',
-      status: 'pending'
+      status: 'pending',
+      versionHistory: [
+        { id: 1, type: 'Original', date: 'March 15, 2024', modified: '' }
+      ],
+      additionalComplainants: [],
+      additionalRespondents: [],
+      progressList: []
     },
     {
       id: 2,
@@ -34,7 +41,15 @@ function ComplaintPage() {
       complainantName: 'Jane Smith',
       college: 'CBM',
       dateFiled: 'March 10, 2024',
-      status: 'pending'
+      status: 'pending',
+      versionHistory: [
+        { id: 1, type: 'Original', date: 'March 10, 2024', modified: '' },
+        { id: 2, type: 'First Modifications', date: 'March 12, 2024', modified: 'March 12, 2024' },
+        { id: 3, type: 'Second Modifications', date: 'March 15, 2024', modified: 'March 15, 2024' }
+      ],
+      additionalComplainants: [],
+      additionalRespondents: [],
+      progressList: []
     },
     {
       id: 3,
@@ -44,7 +59,13 @@ function ComplaintPage() {
       complainantName: 'Mike Johnson',
       college: 'COE',
       dateFiled: 'March 5, 2024',
-      status: 'resolved'
+      status: 'resolved',
+      versionHistory: [
+        { id: 1, type: 'Original', date: 'March 5, 2024', modified: '' }
+      ],
+      additionalComplainants: [],
+      additionalRespondents: [],
+      progressList: []
     },
     {
       id: 4,
@@ -54,9 +75,39 @@ function ComplaintPage() {
       complainantName: 'Sarah Lee',
       college: 'CCIS',
       dateFiled: 'March 12, 2024',
-      status: 'pending'
+      status: 'pending',
+      versionHistory: [
+        { id: 1, type: 'Original', date: 'March 12, 2024', modified: '' },
+        { id: 2, type: 'First Modifications', date: 'March 14, 2024', modified: 'March 14, 2024' }
+      ],
+      additionalComplainants: [],
+      additionalRespondents: [],
+      progressList: []
     }
-  ]
+  ])
+
+  // Check for updated complaint from evaluate page - use useEffect to handle navigation state
+  useEffect(() => {
+    const updatedComplaintFromEvaluate = location.state?.updatedComplaint
+    if (updatedComplaintFromEvaluate) {
+      setComplaints(prevComplaints => {
+        // Find and update the complaint in our list
+        const existingIndex = prevComplaints.findIndex(c => c.id === updatedComplaintFromEvaluate.id || c.complaintNo === updatedComplaintFromEvaluate.complaintNo)
+        if (existingIndex >= 0) {
+          // Update existing complaint
+          const updatedComplaints = [...prevComplaints]
+          updatedComplaints[existingIndex] = { ...updatedComplaints[existingIndex], ...updatedComplaintFromEvaluate }
+          return updatedComplaints
+        } else {
+          // Add as new complaint
+          return [...prevComplaints, updatedComplaintFromEvaluate]
+        }
+      })
+      
+      // Clear the location state to prevent duplicate processing
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [location.state, navigate])
 
   const menuItems = [
     { label: 'HOME', path: '/admin-dashboard' },
@@ -96,7 +147,39 @@ function ComplaintPage() {
   }
 
   const handleEvaluateClick = (complaint) => {
+    // Navigate to evaluate page for editing
     navigate('/complaint-evaluate', { state: { complaint } })
+  }
+
+  const handleViewDetailsClick = (complaint) => {
+    // Get version history from complaint
+    const versionHistory = complaint.versionHistory || [
+      { id: 1, type: 'Original', date: complaint.dateFiled, modified: '' }
+    ]
+    
+    // Check if complaint has been modified (more than just Original)
+    const hasModifications = versionHistory.length > 1 || 
+      complaint.additionalComplainants?.length > 0 ||
+      complaint.additionalRespondents?.length > 0 ||
+      complaint.progressList?.length > 0
+    
+    if (hasModifications) {
+      // Has modifications - go to history list view to show all versions
+      navigate('/complaint-history', { 
+        state: { 
+          complaint: complaint,
+          versionHistory: versionHistory
+        } 
+      })
+    } else {
+      // No modifications - go directly to simple summary view
+      navigate('/complaint-summary-view', { 
+        state: { 
+          complaint: complaint,
+          versionHistory: versionHistory
+        } 
+      })
+    }
   }
 
   const getFilterButtons = () => {
@@ -256,11 +339,19 @@ function ComplaintPage() {
                   )}
                   <p className="text-xs text-gray-600">Name of complainant: {complaint.complainantName}</p>
                   <p className="text-xs text-gray-600">College/Institute: {complaint.college}</p>
+                  {(complaint.additionalComplainants?.length > 0 || complaint.additionalRespondents?.length > 0 || complaint.progressList?.length > 0) && (
+                    <p className="text-xs text-blue-600 font-medium mt-1">
+                      Modified: +{complaint.additionalComplainants?.length || 0} complainants, +{complaint.additionalRespondents?.length || 0} respondents, +{complaint.progressList?.length || 0} progress
+                    </p>
+                  )}
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex justify-center gap-2 pt-3 border-t border-gray-200">
-                  <button className="px-4 py-1.5 border border-gray-400 rounded text-xs font-medium hover:bg-gray-100 transition-colors">
+                  <button 
+                    className="px-4 py-1.5 border border-gray-400 rounded text-xs font-medium hover:bg-gray-100 transition-colors"
+                    onClick={() => handleViewDetailsClick(complaint)}
+                  >
                     View Details
                   </button>
                   
