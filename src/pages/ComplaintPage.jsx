@@ -396,7 +396,7 @@ function ComplaintPage() {
       <section className="fixed bottom-8 right-8 flex flex-col items-end gap-3 z-20">
         {/* FAB Menu Options */}
         <div 
-          className={`flex flex-col items-end gap-3 transition-all duration-300 ease-in-out ${isFabMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+          className={`flex flex-col items-end gap-3 transition-all duration-300 ease-in-out ${isFabMenuOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}
           onMouseEnter={() => setIsFabMenuOpen(true)}
           onMouseLeave={() => setIsFabMenuOpen(false)}
         >
@@ -411,6 +411,7 @@ function ComplaintPage() {
           </button>
 
           <button 
+            onClick={() => navigate('/admin/encode-complaint')}
             className="flex items-center gap-3 px-6 py-3 rounded-full bg-gray-300 text-gray-700 font-medium text-sm hover:bg-gray-400 transition-colors shadow-lg"
           >
             Encode Complaint
@@ -423,6 +424,7 @@ function ComplaintPage() {
 
           <button 
             className="flex items-center gap-3 px-6 py-3 rounded-full bg-gray-300 text-gray-700 font-medium text-sm hover:bg-gray-400 transition-colors shadow-lg"
+            onClick={() => navigate('/encode-violation')}
           >
             Encode Violation Citation
             <div className="w-5 h-5 rounded-full bg-blue-400 flex items-center justify-center">

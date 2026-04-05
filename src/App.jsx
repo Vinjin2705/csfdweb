@@ -57,6 +57,8 @@ import AddAnnouncementPage from './pages/AddAnnouncementPage'
 import AddProgressPage from './pages/AddProgressPage'
 import DisciplinaryRecordsPage from './pages/DisciplinaryRecordsPage'
 import ComplaintPage from './pages/ComplaintPage'
+import EncodeViolationPage from './pages/EncodeViolationPage'
+import AdminEncodeComplaintPage from './pages/AdminEncodeComplaintPage'
 
 function App() {
   return (
@@ -114,6 +116,8 @@ function App() {
         <Route path="/add-progress" element={<AddProgressPage />} />
         <Route path="/disciplinary-records" element={<DisciplinaryRecordsPage />} />
         <Route path="/complaint" element={<ComplaintPage />} />
+        <Route path="/encode-violation" element={<EncodeViolationPage />} />
+        <Route path="/admin/encode-complaint" element={<AdminEncodeComplaintPage />} />
         <Route path="/uniform-exemption-admin" element={<UniformExemptionAdminPage />} />
         <Route path="/child-clearance" element={<ChildClearancePage />} />
         <Route path="/cross-dressing" element={<CrossDressingPage />} />

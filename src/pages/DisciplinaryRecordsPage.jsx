@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import umakLogo from '../assets/logos/UMAK LOGO.png'
 import csfdLogo from '../assets/logos/CSFD LOGO.png'
 import footerUmakLogo from '../assets/logos/UMAK LOGO.png'
@@ -7,10 +7,12 @@ import footerCsfdLogo from '../assets/logos/CSFD LOGO.png'
 
 function DisciplinaryRecordsPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isFabMenuOpen, setIsFabMenuOpen] = useState(false)
   const [filterBy, setFilterBy] = useState('Major Offense')
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedViolation, setSelectedViolation] = useState(null)
   const [records, setRecords] = useState([
     {
       id: 1,
@@ -21,7 +23,8 @@ function DisciplinaryRecordsPage() {
       receivedDate: 'January 23, 1991',
       status: 'First Offense',
       college: 'CCIS',
-      email: 'juandelacruzsir@gmail.com'
+      email: 'juandelacruzsir@gmail.com',
+      caseSeverity: 'Minor'
     }
   ])
 
@@ -52,6 +55,24 @@ function DisciplinaryRecordsPage() {
     // Search functionality would filter records based on searchQuery and filterBy
     console.log('Searching for:', searchQuery, 'with filter:', filterBy)
   }
+
+  const handleEvaluate = (record) => {
+    setSelectedViolation(record)
+  }
+
+  const closeModal = () => {
+    setSelectedViolation(null)
+  }
+
+  // Check for new violation from EncodeViolationPage
+  useEffect(() => {
+    const newViolation = location.state?.newViolation
+    if (newViolation) {
+      setRecords(prev => [newViolation, ...prev])
+      // Clear the location state
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [location.state, navigate, location.pathname])
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -134,7 +155,8 @@ function DisciplinaryRecordsPage() {
                   <th className="px-4 py-3 text-left font-medium text-gray-700 border-r border-gray-400">Received Date</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-700 border-r border-gray-400">Status</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-700 border-r border-gray-400">College</th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700">UMak Email Address</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-700 border-r border-gray-400">UMak Email Address</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-700">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -155,12 +177,22 @@ function DisciplinaryRecordsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 border-r border-gray-400">{record.college}</td>
-                    <td className="px-4 py-3">{record.email}</td>
+                    <td className="px-4 py-3 border-r border-gray-400">{record.email}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => handleEvaluate(record)}
+                        className="px-3 py-1 rounded text-xs font-medium text-white hover:opacity-90 transition-opacity"
+                        style={{ backgroundColor: '#ffc400', color: '#111c4e' }}
+                      >
+                        Evaluate
+                      </button>
+                    </td>
                   </tr>
                 ))}
                 {/* Empty rows for table structure */}
                 {[...Array(14)].map((_, index) => (
                   <tr key={`empty-${index}`} className="border-b border-gray-300 h-10">
+                    <td className="border-r border-gray-400"></td>
                     <td className="border-r border-gray-400"></td>
                     <td className="border-r border-gray-400"></td>
                     <td className="border-r border-gray-400"></td>
@@ -178,11 +210,120 @@ function DisciplinaryRecordsPage() {
         </div>
       </div>
 
+      {/* Violation Summary Modal */}
+      {selectedViolation && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center" style={{ backgroundColor: '#111c4e' }}>
+              <h2 className="text-xl font-bold text-white">Violation Summary</h2>
+              <button
+                onClick={closeModal}
+                className="text-white hover:text-gray-300 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6">
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">Student Number</label>
+                  <p className="text-sm font-medium text-gray-900">{selectedViolation.studentNumber}</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">Student Name</label>
+                  <p className="text-sm font-medium text-gray-900">{selectedViolation.studentName}</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">Sex</label>
+                  <p className="text-sm font-medium text-gray-900">{selectedViolation.sex}</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">College/Institute</label>
+                  <p className="text-sm font-medium text-gray-900">{selectedViolation.college}</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">UMak Email</label>
+                  <p className="text-sm font-medium text-gray-900">{selectedViolation.email}</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">Received Date</label>
+                  <p className="text-sm font-medium text-gray-900">{selectedViolation.receivedDate}</p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-xs font-medium text-gray-500 mb-1">Case Severity</label>
+                <span 
+                  className="px-3 py-1 rounded-full text-xs font-medium text-white inline-block"
+                  style={{ 
+                    backgroundColor: selectedViolation.caseSeverity === 'Major' ? '#dc2626' : 
+                                   selectedViolation.caseSeverity === 'Minor' ? '#16a34a' : '#6b7280'
+                  }}
+                >
+                  {selectedViolation.caseSeverity} Offense
+                </span>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-xs font-medium text-gray-500 mb-1">Infraction/s</label>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded border border-gray-200">
+                  {selectedViolation.infractions}
+                </p>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-xs font-medium text-gray-500 mb-1">Status</label>
+                <span 
+                  className="px-3 py-1 rounded-full text-xs font-medium text-white inline-block"
+                  style={{ backgroundColor: '#28a745' }}
+                >
+                  {selectedViolation.status}
+                </span>
+              </div>
+
+              {selectedViolation.attachments && (
+                <div className="mb-6">
+                  <label className="block text-xs font-medium text-gray-500 mb-1">Attachments</label>
+                  <div className="flex items-center gap-2 bg-gray-50 p-3 rounded border border-gray-200">
+                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                    </svg>
+                    <span className="text-sm text-gray-700">{selectedViolation.attachments}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+              <button
+                onClick={closeModal}
+                className="px-6 py-2 rounded-lg text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={closeModal}
+                className="px-6 py-2 rounded-lg text-sm font-medium text-gray-900 hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#ffc400' }}
+              >
+                Print
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Floating Action Buttons */}
       <section className="fixed bottom-8 right-8 flex flex-col items-end gap-3 z-20">
         {/* FAB Menu Options - Only show when clicked or hovered */}
         <div 
-          className={`flex flex-col items-end gap-3 transition-all duration-300 ease-in-out ${isFabMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+          className={`flex flex-col items-end gap-3 transition-all duration-300 ease-in-out ${isFabMenuOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}
           onMouseEnter={() => setIsFabMenuOpen(true)}
           onMouseLeave={() => setIsFabMenuOpen(false)}
         >
@@ -197,6 +338,7 @@ function DisciplinaryRecordsPage() {
           </button>
 
           <button 
+            onClick={() => navigate('/admin/encode-complaint')}
             className="flex items-center gap-3 px-6 py-3 rounded-full bg-gray-300 text-gray-700 font-medium text-sm hover:bg-gray-400 transition-colors shadow-lg"
           >
             Encode Complaint
@@ -209,6 +351,7 @@ function DisciplinaryRecordsPage() {
 
           <button 
             className="flex items-center gap-3 px-6 py-3 rounded-full bg-gray-300 text-gray-700 font-medium text-sm hover:bg-gray-400 transition-colors shadow-lg"
+            onClick={() => navigate('/encode-violation')}
           >
             Encode Violation Citation
             <div className="w-5 h-5 rounded-full bg-blue-400 flex items-center justify-center">
